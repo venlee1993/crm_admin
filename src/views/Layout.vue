@@ -1,22 +1,62 @@
 <template>
     <div class="layout">
-        <Layout class="h100">
-            <Sider ref="side1" hide-trigger collapsible :collapsed-width="78" v-model="isCollapsed">
+        <Layout class="full_height">
+            <Sider ref="side" hide-trigger collapsible :collapsed-width="78" v-model="isCollapsed">
                 <div class="layout-logo-left">
-                    fdsfdfdfds
+                    <img src="../assets/images/logo.png" alt="" style="width: 100%">
                 </div>
                 <Menu active-name="1-2" theme="dark" width="auto" :class="menuitemClasses">
+
+                    <Submenu name="1">
+                        <template slot="title">
+                            <Icon type="ios-analytics" />
+                            房产管理
+                        </template>
+                        <MenuGroup title="Item 1">
+                            <MenuItem name="1-1">Option 1</MenuItem>
+                            <MenuItem name="1-2">Option 2</MenuItem>
+                        </MenuGroup>
+                        <MenuGroup title="Item 2">
+                            <MenuItem name="1-3">Option 3</MenuItem>
+                            <MenuItem name="1-4">Option 4</MenuItem>
+                        </MenuGroup>
+                    </Submenu>
+
                     <MenuItem name="1-1">
                         <Icon type="ios-navigate"></Icon>
-                        <span>Option 1</span>
+                        <span>房产管理</span>
                     </MenuItem>
                     <MenuItem name="1-2">
                         <Icon type="ios-search"></Icon>
-                        <span>Option 2</span>
+                        <span>楼盘管理</span>
                     </MenuItem>
                     <MenuItem name="1-3">
                         <Icon type="ios-settings"></Icon>
-                        <span>Option 3</span>
+                        <span>客户管理</span>
+                    </MenuItem>
+                    <MenuItem name="1-4">
+                        <Icon type="ios-settings"></Icon>
+                        <span>策略管理</span>
+                    </MenuItem>
+                    <MenuItem name="1-5">
+                        <Icon type="ios-settings"></Icon>
+                        <span>系统管理</span>
+                    </MenuItem>
+                    <MenuItem name="1-6">
+                        <Icon type="ios-settings"></Icon>
+                        <span>业绩管理</span>
+                    </MenuItem>
+                    <MenuItem name="1-7">
+                        <Icon type="ios-settings"></Icon>
+                        <span>统计管理</span>
+                    </MenuItem>
+                    <MenuItem name="1-7">
+                        <Icon type="ios-settings"></Icon>
+                        <span>订单管理</span>
+                    </MenuItem>
+                    <MenuItem name="1-8">
+                        <Icon type="ios-settings"></Icon>
+                        <span>个人中心</span>
                     </MenuItem>
                 </Menu>
             </Sider>
@@ -26,7 +66,7 @@
                           size="24"></Icon>
                 </Header>
                 <Content :style="{margin: '20px', background: '#fff', minHeight: '260px'}">
-                    Content
+                    <router-view/>
                 </Content>
             </Layout>
         </Layout>
@@ -54,7 +94,7 @@
         },
         methods: {
             collapsedSider() {
-                this.$refs.side1.toggleCollapse();
+                this.$refs.side.toggleCollapse();
             }
         }
     }
@@ -66,9 +106,11 @@
         position: relative;
         overflow: hidden;
     }
-    .h100{
+
+    .full_height {
         min-height: 100vh;
     }
+
     .layout-header-bar {
         background: #fff;
         box-shadow: 0 1px 1px rgba(0, 0, 0, .1);
