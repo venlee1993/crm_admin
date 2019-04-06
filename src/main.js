@@ -4,7 +4,7 @@ import router from './router/index'
 import store from './store/index'
 import Iview from 'iview'
 import 'iview/dist/styles/iview.css'
-
+import './assets/css/reset.css'
 
 Vue.use(Iview)
 

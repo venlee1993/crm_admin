@@ -6,3 +6,37 @@ html, body {
 ul, ul li {
     list-style: none;
 }
+
+
+
+
+
+.ivu-layout-header{
+    height: 40px;
+    line-height: 40px;
+}
+
+
+.ivu-layout-sider{
+    background-color: rgb(35, 35, 35)
+}
+
+.ivu-menu-dark{
+    background-color: transparent
+}
+
+.menu-icon{
+    color: white;
+}
+
+.collapsed-menu .ivu-menu{
+    display: none;
+}
+
+.collapsed-menu .ivu-menu-submenu-title-icon{
+    display: none;
+}
+
+.ivu-menu-dark.ivu-menu-vertical .ivu-menu-item, .ivu-menu-dark.ivu-menu-vertical .ivu-menu-submenu-title{
+    text-align: left;
+}

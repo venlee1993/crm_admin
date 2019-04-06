@@ -1,0 +1,168 @@
+<template>
+    <div class="user">
+        <Breadcrumb class="bread_crumb">
+            <Breadcrumb-item href="/components/breadcrumb">系统管理</Breadcrumb-item>
+            <Breadcrumb-item>角色管理</Breadcrumb-item>
+        </Breadcrumb>
+        <div class="top_bar">
+            <div class="search_box">
+                <Form ref="formInline" :model="formInline" inline class="filters">
+                    <FormItem prop="username">
+                        <Input type="text" v-model="formInline.username" placeholder="名称"></Input>
+                    </FormItem>
+                    <FormItem prop="mobile">
+                        <Input type="text" v-model="formInline.mobile" placeholder="角色"></Input>
+                    </FormItem>
+                    <FormItem>
+                        <FormItem prop="code">
+                            <Input type="text" v-model="formInline.code" placeholder="编码"></Input>
+                        </FormItem>
+                        <Button type="primary" @click="handleSubmit('formInline')">搜索</Button>
+                    </FormItem>
+                </Form>
+            </div>
+            <div class="add_box">
+                <i-button type="primary">添加角色</i-button>
+            </div>
+        </div>
+
+        <Table border :columns="columns" :data="list" class="base_table">
+            <template slot-scope="{ row, index }" slot="action">
+                <Button type="primary" size="small" style="margin-right: 5px" @click="edit(row)">编辑</Button>
+                <Button type="primary" size="small" style="margin-right: 5px" @click="auth(row)">权限</Button>
+                <Button type="warning" size="small" @click="remove(index)">删除</Button>
+            </template>
+        </Table>
+
+        <Page :total="page" show-elevator @on-change="pageChange"/>
+
+        <Modal v-model="editModel" width="400" @on-ok="handleSubmit('formRole')">
+            <div slot="header">
+                <span>编辑用户</span>
+            </div>
+            <div class="edit_form">
+                <Form ref="formRole" :model="formRole" :label-width="60">
+                    <FormItem label="角色" prop="role">
+                        <Input type="text" v-model="formRole.role"></Input>
+                    </FormItem>
+                    <FormItem label="名称" prop="name">
+                        <Input type="text" v-model="formRole.name"></Input>
+                    </FormItem>
+                    <FormItem label="编码" prop="code">
+                        <Input type="text" v-model="formRole.code"></Input>
+                    </FormItem>
+                </Form>
+            </div>
+        </Modal>
+
+
+        <Modal v-model="editModel" width="400" @on-ok="handleSubmit('formRole')">
+            <div slot="header">
+                <span>编辑用户</span>
+            </div>
+            <div class="edit_form">
+                <Form ref="formRole" :model="formRole" :label-width="60">
+                    <FormItem label="角色" prop="role">
+                        <Input type="text" v-model="formRole.role"></Input>
+                    </FormItem>
+                    <FormItem label="名称" prop="name">
+                        <Input type="text" v-model="formRole.name"></Input>
+                    </FormItem>
+                    <FormItem label="编码" prop="code">
+                        <Input type="text" v-model="formRole.code"></Input>
+                    </FormItem>
+                </Form>
+            </div>
+        </Modal>
+
+    </div>
+</template>
+
+<script>
+    import {getRoleList} from "../../service/api";
+
+    export default {
+        name: "User",
+        data() {
+            return {
+                columns: [
+                    {
+                        title: "ID",
+                        key: "objectId"
+                    },
+                    {
+                        title: "名称",
+                        key: "name"
+                    },
+                    {
+                        title: "角色",
+                        key: "role"
+                    },
+                    {
+                        title: "编码",
+                        key: "code"
+                    },
+                    {
+                        title: "Action",
+                        slot: "action",
+                        width: 300,
+                        align: "center"
+                    }
+                ],
+                list: [],
+                editModel: false,
+                formInline: {name: "", role: "", code: ""},
+                formRole: {name: "", role: "", code: ""},
+                page: 0
+            };
+        },
+        created() {
+            getRoleList().then(res => {
+                if (res.data.code == 200) {
+                    this.list = res.data.data;
+                    this.page = res.data.page.total
+                }
+            });
+        },
+        methods: {
+            pageChange(index) {
+                console.log(index);
+            },
+            handleSubmit(form) {
+                console.log(form);
+            },
+            getListByRules() {
+            },
+            edit(row) {
+                this.editModel = true;
+                this.formRole = row;
+            },
+            remove() {
+            }
+        }
+    };
+</script>
+
+<style lang="less" scoped>
+    .user {
+        padding: 0 20px;
+        .top_bar{
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .bread_crumb{
+            margin-top: 20px;
+            text-align: left;
+        }
+    }
+
+    .filters {
+        padding-top: 24px;
+        text-align: left;
+    }
+
+    .base_table {
+        margin-bottom: 20px;
+    }
+</style>

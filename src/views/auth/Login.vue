@@ -47,9 +47,9 @@
             handleSubmit(name) {
                 this.$refs[name].validate((valid) => {
                     if (valid) {
-                        login(this.loginData).then(res => {
+                        login().then(res => {
                             if (res.data.code == 200) {
-                                this.$Message.error('success!');
+                                this.$router.push('/')
                             }
                         })
                     } else {

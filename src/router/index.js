@@ -29,7 +29,12 @@ export default new Router({
                     path: 'user',
                     name: 'usermanger',
                     component: () => import('../views/system/User')
-                }
+                },
+                {
+                    path: 'role',
+                    name: 'rolemanger',
+                    component: () => import('../views/system/Role')
+                },
             ]
         }
     ]

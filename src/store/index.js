@@ -5,9 +5,19 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
     state: {
-        user:{},
-
+        user: {},
+        perssion: ['admin']
     },
-    mutations: {},
+    mutations: {
+        LOGIN(state, data) {
+            state.user = data;
+        },
+        LOGOUT() {
+            state.user = {}
+        },
+        INIT_PERSSION() {
+
+        }
+    },
     actions: {}
 })
