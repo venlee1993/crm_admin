@@ -1,28 +1,20 @@
 <template>
     <div class="user">
         <div class="top_bar">
+
             <div class="search_box">
-                <Form ref="formInline" :model="formInline" inline class="filters">
+                <Form ref="searchForm" :model="searchForm" inline class="filters">
                     <FormItem prop="username">
-                        <Input type="text" v-model="formInline.username" placeholder="用户名"></Input>
+                        <Input type="text" v-model="searchForm.username" placeholder="用户名"></Input>
                     </FormItem>
                     <FormItem prop="mobile">
-                        <Input type="text" v-model="formInline.mobile" placeholder="手机号"></Input>
-                    </FormItem>
-                    <FormItem prop="gender">
-                        <Select v-model="formInline.gender" style="width:162px">
-                            <Option value="M" key="M">男</Option>
-                            <Option value="W" key="W">女</Option>
-                        </Select>
-                    </FormItem>
-                    <FormItem prop="status">
-                        <Select v-model="formInline.status" style="width:162px">
-                            <Option value="ENABLE" key="M">正常</Option>
-                            <Option value="DISABLE" key="W">禁用</Option>
-                        </Select>
+                        <Input type="text" v-model="searchForm.mobile" placeholder="手机号"></Input>
                     </FormItem>
                     <FormItem>
-                        <Button type="primary" @click="handleSubmit('formInline')">搜索</Button>
+                        <Button type="success" @click="handleReset('searchForm')">重置</Button>
+                    </FormItem>
+                    <FormItem>
+                        <Button type="primary" @click="handleSubmit('searchForm')">搜索</Button>
                     </FormItem>
                 </Form>
             </div>
@@ -30,44 +22,45 @@
                 <i-button type="primary" @click="addUser">添加用户</i-button>
             </div>
         </div>
-        <Table border :columns="columns" :data="list" class="base_table">
+
+        <Table border :columns="columns" :data="list" class="base_table" :loading="loading">
             <template slot-scope="{ row, index }" slot="gender">{{row.gender=='M'?'男':'女'}}</template>
             <template slot-scope="{ row, index }" slot="status">
                 <Tag color="default" v-if="row.status=='ENABLE'">禁用</Tag>
                 <Tag color="primary" v-else>正常</Tag>
             </template>
             <template slot-scope="{ row, index }" slot="action">
-                <Button type="info" size="small" style="margin-right: 5px">查看</Button>
                 <Button type="success" size="small" style="margin-right: 5px" @click="roleEdit(row)">角色</Button>
                 <Button type="primary" size="small" style="margin-right: 5px" @click="userEdit(row)">编辑</Button>
                 <Button type="warning" size="small">删除</Button>
             </template>
         </Table>
+
         <Page :total="pageTotal" show-elevator @on-change="pageChange"/>
 
-        <Modal v-model="editModel" width="400" @on-ok="handleSubmit('formCustom')">
+        <Modal v-model="editModel" width="400" @on-ok="handleSubmit('editUserForm')">
             <div slot="header">
                 <span>编辑用户</span>
             </div>
             <div class="edit_form">
-                <Form ref="formCustom" :model="formCustom" :label-width="60">
+                <Form ref="editUserForm" :model="editUserForm" :label-width="60">
                     <FormItem label="真名" prop="realName">
-                        <Input type="text" v-model="formCustom.realName"></Input>
+                        <Input type="text" v-model="editUserForm.realName"></Input>
                     </FormItem>
                     <FormItem label="性别" prop="gender">
-                        <Input type="text" v-model="formCustom.gender"></Input>
+                        <Input type="text" v-model="editUserForm.gender"></Input>
                     </FormItem>
                     <FormItem label="电话" prop="mobile">
-                        <Input type="text" v-model="formCustom.mobile"></Input>
+                        <Input type="text" v-model="editUserForm.mobile"></Input>
                     </FormItem>
                     <FormItem label="身份证" prop="id_no">
-                        <Input type="text" v-model="formCustom.id_no"></Input>
+                        <Input type="text" v-model="editUserForm.idNo"></Input>
                     </FormItem>
                 </Form>
             </div>
         </Modal>
 
-        <Modal v-model="roleModal" width="452" @on-ok="handleSubmit('formCustom')">
+        <Modal v-model="roleModal" width="452" @on-ok="handleSubmit('editUserForm')">
             <div slot="header">
                 <span>角色分配</span>
             </div>
@@ -82,48 +75,47 @@
             </div>
         </Modal>
 
-        <Modal v-model="userModal" width="750" @on-ok="handleSubmit('formUser')">
+        <Modal v-model="userModal" width="750" @on-ok="handleSubmit('addUserForm')">
             <div slot="header">
-                <span>角色分配</span>
+                <span>添加用户</span>
             </div>
             <div class="role_form">
-                <Form ref="userForm" :model="formUser" :label-width="60">
+                <Form ref="userForm" :model="addUserForm" :label-width="100" :rules="addUserRules">
                     <div class="form_inner">
                         <div class="avatar">
-                            <Upload
-                                    v-ref:upload
-                                    :show-upload-list="false"
-                                    :default-file-list="defaultList"
-                                    :on-success="handleSuccess"
-                                    :format="['jpg','jpeg','png']"
-                                    :max-size="2048"
-                                    :on-format-error="handleFormatError"
-                                    :on-exceeded-size="handleMaxSize"
-                                    :before-upload="handleBeforeUpload"
-                                    multiple
-                                    type="drag"
-                                    class="uploader">
-                                <div class="preview">
-                                    <span>上传图像</span>
-                                </div>
-                            </Upload>
+                            <!--                            <Upload-->
+                            <!--                                    v-ref:upload-->
+                            <!--                                    :show-upload-list="false"-->
+                            <!--                                    :default-file-list="defaultList"-->
+                            <!--                                    :on-success="handleSuccess"-->
+                            <!--                                    :format="['jpg','jpeg','png']"-->
+                            <!--                                    :max-size="2048"-->
+                            <!--                                    :on-format-error="handleFormatError"-->
+                            <!--                                    :on-exceeded-size="handleMaxSize"-->
+                            <!--                                    :before-upload="handleBeforeUpload"-->
+                            <!--                                    multiple-->
+                            <!--                                    type="drag"-->
+                            <!--                                    class="uploader">-->
+                            <!--                                <div class="preview">-->
+                            <!--                                    <span>上传图像</span>-->
+                            <!--                                </div>-->
+                            <!--                            </Upload>-->
                         </div>
                         <div class="info" inline>
-                            <FormItem label="用户姓名" prop="name">
-                                <Input type="text" v-model="formUser.name"></Input>
+                            <FormItem label="用户姓名" prop="username">
+                                <Input type="text" v-model="addUserForm.username"></Input>
                             </FormItem>
                             <FormItem label="用户昵称" prop="nickname">
-                                <Input type="text" v-model="formUser.nickname"></Input>
+                                <Input type="text" v-model="addUserForm.nickname"></Input>
                             </FormItem>
                             <FormItem label="用户电话" prop="mobile">
-                                <Input type="text" v-model="formUser.mobile"></Input>
+                                <Input type="text" v-model="addUserForm.mobile"></Input>
                             </FormItem>
-
                             <FormItem label="用户密码" prop="password">
-                                <Input type="text" v-model="formUser.password"></Input>
+                                <Input type="text" v-model="addUserForm.password"></Input>
                             </FormItem>
-                            <FormItem label="用户角色" prop="role">
-                                <Select v-model="formUser.role">
+                            <FormItem label="用户角色" prop="roles">
+                                <Select v-model="addUserForm.roles">
                                     <Option value="12121212">系统管理员</Option>
                                     <Option value="12121212">总经理</Option>
                                     <Option value="12121212">销售经理</Option>
@@ -131,7 +123,7 @@
                                 </Select>
                             </FormItem>
                             <FormItem label="身份证" prop="idNo">
-                                <Input type="text" v-model="formUser.idNo"></Input>
+                                <Input type="text" v-model="addUserForm.idNo"></Input>
                             </FormItem>
                         </div>
                     </div>
@@ -143,7 +135,7 @@
 </template>
 
 <script>
-    import {getUserList, getRoleList} from "../../service/api";
+    import {getUserList, getRoleList, addUser} from "../../service/api";
 
     export default {
         name: "User",
@@ -188,43 +180,56 @@
                     }
                 ],
                 list: [],
-                formInline: {
+                searchForm: {
                     username: "",
-                    mobile: "",
-                    gender: "",
-                    status: "",
-                    pageIndex: 1
+                    mobile: ""
                 },
                 pageTotal: 0,
                 editModel: false,
                 roleModal: false,
                 userModal: false,
-                formCustom: {
+                editUserForm: {
                     realName: '',
                     gender: '',
                     mobile: '',
-                    id_no: ''
-
+                    idNo: ''
                 },
-                formUser: {},
+                addUserForm: {
+                    username: '',
+                    nickname: '',
+                    mobile: '',
+                    password: '',
+                    roles: '',
+                    idNo: ''
+                },
+                addUserRules: {
+                    username: [
+                        {required: true, message: '请输入用户名', trigger: 'blur'}
+                    ],
+                    nickname: [
+                        {required: true, message: '请输入昵称', trigger: 'blur'}
+                    ],
+                    mobile: [
+                        {required: true, message: '电话', trigger: 'blur'},
+                    ],
+                    password: [
+                        {required: true, message: '密码', trigger: 'blur'},
+                    ],
+                    roles: [
+                        {required: true, message: '请选择角色', trigger: 'blur'},
+                    ],
+                    idNo: [
+                        {required: true, message: '请输入身份证', trigger: 'blur'},
+                    ]
+                },
                 currentRoles: ['1'],
-                allRoles: []
+                allRoles: [],
+                loading: true
             };
         },
         created() {
-            getUserList().then(res => {
-                if (res.data.code == 200) {
-                    this.list = res.data.data;
-                    this.pageTotal = Number(res.data.page.pages)
-                }
-            });
-            getRoleList().then(res => {
-                if (res.data.code == 200 && res.data.data.length > 0) {
-                    this.allRoles = res.data.data.map(item => {
-                        return Object.assign({}, {'key': item.objectId, 'label': item.name, 'disabled': false});
-                    })
-                }
-            })
+            this.userList();
+            this.roleList();
         },
         methods: {
 
@@ -232,14 +237,23 @@
                 console.log(index);
             },
             handleSubmit(form) {
-                console.log(form);
+                if (form == 'searchForm') {
+                    if (this.searchForm.username == '' && this.searchForm.mobile == '') return;
+                    this.userFilter()
+                    this.loading = true
+                }
+                if (form == 'addUserForm') {
+                    this.userAdd();
+                }
             },
-            getListByRules() {
-
+            handleReset(name) {
+                this.loading = true;
+                this.userList();
+                this.$refs[name].resetFields();
             },
             userEdit(row) {
                 this.editModel = true;
-                this.formCustom = row;
+                this.editUserForm = row;
             },
             roleEdit() {
                 this.roleModal = true;
@@ -255,6 +269,37 @@
             },
             addUser() {
                 this.userModal = true;
+                console.log(this.addUserForm);
+                this.userAdd(this.addUserForm)
+            },
+            userFilter() {
+                this.userList(this.searchForm)
+            },
+            userList(data) {
+                getUserList(data).then(res => {
+                    if (res.data.code == 200) {
+                        this.list = res.data.data;
+                        this.pageTotal = Number(res.data.page.pages)
+                        this.loading = false;
+                    }
+                });
+            },
+            roleList() {
+                getRoleList().then(res => {
+                    if (res.data.code == 200 && res.data.data.length > 0) {
+                        this.allRoles = res.data.data.map(item => {
+                            return Object.assign({}, {'key': item.objectId, 'label': item.name, 'disabled': false});
+                        })
+                    }
+                })
+            },
+            userAdd() {
+                addUser(this.addUserForm).then(res => {
+                    if (res.data.code == 200) {
+                        this.userList();
+                        this.loading = true;
+                    }
+                })
             }
         }
     };

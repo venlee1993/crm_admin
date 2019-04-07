@@ -15,7 +15,7 @@ export default new Vuex.Store({
         LOGOUT() {
             state.user = {}
         },
-        INIT_PERSSION() {
+        INIT_USER() {
 
         }
     },

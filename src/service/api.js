@@ -1,6 +1,7 @@
 import axios from 'axios'
 import router from '../router/index'
 
+
 const xhr = axios.create({
     baseURL: 'http://tuan.xidawu.net:9527',
     timeout: 3000,
@@ -9,7 +10,7 @@ const xhr = axios.create({
 
 
 xhr.interceptors.response.use(response => {
-    if (response.data.data.code == 40000) {
+    if (response.data.code == 40000) {
         router.push('/user/login')
     } else {
         return response
@@ -29,15 +30,41 @@ export const login = () => {
     })
 }
 
-export const getUserList = () => {
+export const getUserList = (data) => {
     return new Promise(function (resolve, reject) {
-        xhr.post('/user/list').then(res => {
+        let base = '/user/list';
+        if (data) {
+            let feilds = '?', values = ''
+            Object.keys(data).forEach(key => {
+                if (data[key] != '') {
+                    feilds = feilds + `feilds=${key}&`;
+                    values = values + `values=${data[key]}&`
+                }
+            })
+            base = base + feilds + values;
+            base = base.substring(0, base.lastIndexOf('&'));
+        }
+        xhr.post(base).then(res => {
             resolve(res)
         }).catch(error => {
             reject(error)
         })
     })
 }
+
+
+export const addUser = (data) => {
+    return new Promise(function (resolve, reject) {
+        xhr.post('/user/add', JSON.toString(data), {
+            "Content-Type": "application/json;"
+        }).then(res => {
+            resolve(res)
+        }).catch(error => {
+            reject(error)
+        })
+    })
+}
+
 
 export const getRoleList = () => {
     return new Promise(function (resolve, reject) {

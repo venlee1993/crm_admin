@@ -1,7 +1,7 @@
 <template>
     <Menu active-name="1-2" theme="dark" width="auto" :class="menuitemClasses" accordion>
         <MenuItem name="0">
-            <Icon type="ios-paper" />
+            <Icon type="ios-paper"/>
             <span>首页</span>
         </MenuItem>
         <Submenu name="1">
@@ -53,19 +53,19 @@
         </Submenu>
         <Submenu name="8">
             <template slot="title">
-                <Icon type="md-pie" />
+                <Icon type="md-pie"/>
                 <span>统计分析</span>
             </template>
         </Submenu>
         <Submenu name="9">
-        <template slot="title">
-            <Icon type="ios-clipboard" />
-            <span>订单管理</span>
-        </template>
-    </Submenu>
+            <template slot="title">
+                <Icon type="ios-clipboard"/>
+                <span>订单管理</span>
+            </template>
+        </Submenu>
         <Submenu name="9">
             <template slot="title">
-                <Icon type="md-person" />
+                <Icon type="md-person"/>
                 <span>个人中心</span>
             </template>
         </Submenu>
@@ -75,11 +75,9 @@
 <script>
     export default {
         name: "AdminMenu",
-        props:['slide'],
+        props: ['slide'],
         data() {
-            return {
-            
-            }
+            return {}
         },
         computed: {
             menuitemClasses() {
@@ -119,7 +117,8 @@
         vertical-align: middle;
         font-size: 22px;
     }
-    .collapsed-menu .ivu-menu-submenu-title-icon{
-       display: none;
+
+    .collapsed-menu .ivu-menu-submenu-title-icon {
+        display: none;
     }
 </style>
