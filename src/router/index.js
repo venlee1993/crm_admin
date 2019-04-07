@@ -2,10 +2,12 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Login from '../views/auth/Login'
 import Layout from '../views/Layout'
+import store from '../store/index'
+import iview from 'iview'
 
 Vue.use(Router)
 
-export default new Router({
+const router = new Router({
     mode: 'history',
     routes: [
         {
@@ -38,3 +40,23 @@ export default new Router({
         }
     ]
 })
+
+
+router.beforeEach((to, form, next) => {
+    iview.LoadingBar.start();
+    if (store.getters.user == null) {
+        store.dispatch('getUserInfo').then(res => {
+            next();
+        });
+    } else {
+        next()
+    }
+})
+
+router.afterEach(to => {
+    iview.LoadingBar.finish()
+    window.scrollTo(0, 0)
+})
+
+
+export default router;

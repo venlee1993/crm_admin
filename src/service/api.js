@@ -55,8 +55,13 @@ export const getUserList = (data) => {
 
 export const addUser = (data) => {
     return new Promise(function (resolve, reject) {
-        xhr.post('/user/add', qs.stringify(data), {
-            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+        xhr({
+            url: '/user/add',
+            method: 'POST',
+            data: qs.stringify(data),
+            headers: {
+                'Content-Type': 'application/json'
+            }
         }).then(res => {
             resolve(res)
         }).catch(error => {
@@ -79,6 +84,16 @@ export const getRoleList = () => {
 export const getPermissionList = () => {
     return new Promise(function (resolve, reject) {
         xhr.post('/permission/list').then(res => {
+            resolve(res)
+        }).catch(error => {
+            reject(error)
+        })
+    })
+}
+
+export const getCurrentUser = () => {
+    return new Promise(function (resolve, reject) {
+        xhr.post('/user/current').then(res => {
             resolve(res)
         }).catch(error => {
             reject(error)

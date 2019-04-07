@@ -116,10 +116,7 @@
                             </FormItem>
                             <FormItem label="用户角色" prop="roles">
                                 <Select v-model="addUserForm.roles">
-                                    <Option value="12121212">系统管理员</Option>
-                                    <Option value="12121212">总经理</Option>
-                                    <Option value="12121212">销售经理</Option>
-                                    <Option value="12121212">置业顾问</Option>
+                                    <Option v-for="item in allRoles" :value="item.role">{{item.label}}</Option>
                                 </Select>
                             </FormItem>
                             <FormItem label="身份证" prop="idNo">
@@ -136,6 +133,7 @@
 
 <script>
     import {getUserList, getRoleList, addUser} from "../../service/api";
+    import {mapGetters} from 'vuex'
 
     export default {
         name: "User",
@@ -222,7 +220,6 @@
                         {required: true, message: '请输入身份证', trigger: 'blur'},
                     ]
                 },
-                currentRoles: ['1'],
                 allRoles: [],
                 loading: true
             };
@@ -230,6 +227,11 @@
         created() {
             this.userList();
             this.roleList();
+        },
+        computed: {
+            currentRoles() {
+                return this.$store.getters.roles.map(item => item.objectId)
+            }
         },
         methods: {
 
@@ -269,7 +271,6 @@
             },
             addUser() {
                 this.userModal = true;
-                console.log(this.addUserForm);
                 this.userAdd(this.addUserForm)
             },
             userFilter() {
@@ -288,7 +289,12 @@
                 getRoleList().then(res => {
                     if (res.data.code == 200 && res.data.data.length > 0) {
                         this.allRoles = res.data.data.map(item => {
-                            return Object.assign({}, {'key': item.objectId, 'label': item.name, 'disabled': false});
+                            return Object.assign({}, {
+                                'key': item.objectId,
+                                'label': item.name,
+                                'role': item.role,
+                                'disabled': false
+                            });
                         })
                     }
                 })
@@ -302,7 +308,7 @@
                 })
             }
         }
-    };
+    }
 </script>
 
 <style lang="less" scoped>
