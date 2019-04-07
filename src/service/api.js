@@ -1,6 +1,6 @@
 import axios from 'axios'
 import router from '../router/index'
-
+import qs from 'qs'
 
 const xhr = axios.create({
     baseURL: 'http://tuan.xidawu.net:9527',
@@ -55,8 +55,8 @@ export const getUserList = (data) => {
 
 export const addUser = (data) => {
     return new Promise(function (resolve, reject) {
-        xhr.post('/user/add', JSON.toString(data), {
-            "Content-Type": "application/json;"
+        xhr.post('/user/add', qs.stringify(data), {
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
         }).then(res => {
             resolve(res)
         }).catch(error => {
