@@ -19,7 +19,7 @@
                 </Form>
             </div>
             <div class="add_btn">
-                <i-button type="primary" @click="addUser">添加用户</i-button>
+                <i-button type="primary" @click="showAddForm">添加用户</i-button>
             </div>
         </div>
 
@@ -30,9 +30,10 @@
                 <Tag color="primary" v-else>正常</Tag>
             </template>
             <template slot-scope="{ row, index }" slot="action">
-                <Button type="success" size="small" style="margin-right: 5px" @click="roleEdit(row)">角色</Button>
+                <Button type="info" size="small" style="margin-right: 5px" @click="detail(row)">详情</Button>
+                <Button type="success" size="small" style="margin-right: 5px" @click="disable(row)" v-if="row.status=='ENABLE'">禁用</Button>
+                <Button type="success" size="small" style="margin-right: 5px" @click="enable(row)" v-else>启用</Button>
                 <Button type="primary" size="small" style="margin-right: 5px" @click="userEdit(row)">编辑</Button>
-                <Button type="warning" size="small">删除</Button>
             </template>
         </Table>
 
@@ -57,21 +58,6 @@
                         <Input type="text" v-model="editUserForm.idNo"></Input>
                     </FormItem>
                 </Form>
-            </div>
-        </Modal>
-
-        <Modal v-model="roleModal" width="452" @on-ok="handleSubmit('editUserForm')">
-            <div slot="header">
-                <span>角色分配</span>
-            </div>
-            <div class="role_form">
-                <Transfer
-                        :data="allRoles"
-                        :target-keys="currentRoles"
-                        :render-format="render1"
-                        :titles="['未分配角色','已分配角色']"
-                        @on-change="transferChange"
-                ></Transfer>
             </div>
         </Modal>
 
@@ -116,7 +102,7 @@
                             </FormItem>
                             <FormItem label="用户角色" prop="roles">
                                 <Select v-model="addUserForm.roles">
-                                    <Option v-for="item in allRoles" :value="item.role">{{item.label}}</Option>
+                                    <Option v-for="item in allRoles" :value="item.objectId">{{item.label}}</Option>
                                 </Select>
                             </FormItem>
                             <FormItem label="身份证" prop="idNo">
@@ -133,7 +119,6 @@
 
 <script>
     import {getUserList, getRoleList, addUser} from "../../service/api";
-    import {mapGetters} from 'vuex'
 
     export default {
         name: "User",
@@ -184,7 +169,6 @@
                 },
                 pageTotal: 0,
                 editModel: false,
-                roleModal: false,
                 userModal: false,
                 editUserForm: {
                     realName: '',
@@ -234,7 +218,9 @@
             }
         },
         methods: {
-
+            showAddForm() {
+                this.userModal = true;
+            },
             pageChange(index) {
                 console.log(index);
             },
@@ -245,7 +231,7 @@
                     this.loading = true
                 }
                 if (form == 'addUserForm') {
-                    this.userAdd();
+                    this.addUser();
                 }
             },
             handleReset(name) {
@@ -257,21 +243,17 @@
                 this.editModel = true;
                 this.editUserForm = row;
             },
-            roleEdit() {
-                this.roleModal = true;
-            },
-            render1(item) {
-                return item.label;
-            },
-            transferChange(newTargetKeys, direction, moveKeys) {
-                console.log(newTargetKeys);
-                console.log(direction);
-                console.log(moveKeys);
-                this.currentRoles = newTargetKeys;
-            },
+            //添加用户
             addUser() {
                 this.userModal = true;
-                this.userAdd(this.addUserForm)
+                let data = JSON.parse(JSON.stringify(this.addUserForm))
+                data.roles = [{objectId: data['roles']}]
+                addUser(data).then(res => {
+                    if (res.data.code == 200) {
+                        this.userList();
+                        this.loading = true;
+                    }
+                })
             },
             userFilter() {
                 this.userList(this.searchForm)
@@ -285,6 +267,12 @@
                     }
                 });
             },
+            detail() {
+
+            },
+            disable() {
+
+            },
             roleList() {
                 getRoleList().then(res => {
                     if (res.data.code == 200 && res.data.data.length > 0) {
@@ -293,17 +281,9 @@
                                 'key': item.objectId,
                                 'label': item.name,
                                 'role': item.role,
-                                'disabled': false
+                                'objectId': item.objectId
                             });
                         })
-                    }
-                })
-            },
-            userAdd() {
-                addUser(this.addUserForm).then(res => {
-                    if (res.data.code == 200) {
-                        this.userList();
-                        this.loading = true;
                     }
                 })
             }

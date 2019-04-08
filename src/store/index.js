@@ -32,9 +32,18 @@ export default new Vuex.Store({
     },
     actions: {
         getUserInfo({state, commit}) {
-            getCurrentUser().then(res => {
-                if (res.data.code == 200) {
-                    commit('INIT_USER', res.data.data)
+            return new Promise((resolve, reject) => {
+                try {
+                    getCurrentUser().then(res => {
+                        if (res.data.code == 200) {
+                            commit('INIT_USER', res.data.data)
+                            resolve(res.data)
+                        }
+                    }).catch(error => {
+                        reject(error)
+                    })
+                } catch (error) {
+                    reject(error)
                 }
             })
         }

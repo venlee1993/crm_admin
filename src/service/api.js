@@ -23,7 +23,9 @@ xhr.interceptors.response.use(response => {
 export const login = () => {
     return new Promise(function (resolve, reject) {
         xhr.get('/user/login?username=admin&password=123456').then(res => {
-            resolve(res)
+            if (res.data.code == 200) {
+                resolve(res);
+            }
         }).catch(error => {
             reject(error)
         })
@@ -58,7 +60,7 @@ export const addUser = (data) => {
         xhr({
             url: '/user/add',
             method: 'POST',
-            data: qs.stringify(data),
+            data: data,
             headers: {
                 'Content-Type': 'application/json'
             }

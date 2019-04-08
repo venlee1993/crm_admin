@@ -36,6 +36,11 @@ const router = new Router({
                     name: 'rolemanger',
                     component: () => import('../views/system/Role')
                 },
+                {
+                    path: 'policy',
+                    name: 'policy',
+                    component: () => import('../views/system/Policy')
+                },
             ]
         }
     ]
@@ -44,12 +49,17 @@ const router = new Router({
 
 router.beforeEach((to, form, next) => {
     iview.LoadingBar.start();
-    if (store.getters.user == null) {
+    //没有用户信息，获取后跳转//
+    if (store.getters.user == null && to.name !== 'login') {
         store.dispatch('getUserInfo').then(res => {
-            next();
-        });
+            if (res.code == 200) {
+                next();
+            } else {
+                next({name: 'login'})
+            }
+        })
     } else {
-        next()
+        next();
     }
 })
 

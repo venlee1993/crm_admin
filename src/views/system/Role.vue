@@ -14,34 +14,29 @@
                         <Input type="text" v-model="formInline.mobile" placeholder="角色"></Input>
                     </FormItem>
                     <FormItem>
-                        <FormItem prop="code">
-                            <Input type="text" v-model="formInline.code" placeholder="编码"></Input>
-                        </FormItem>
                         <Button type="primary" @click="handleSubmit('formInline')">搜索</Button>
                     </FormItem>
                 </Form>
             </div>
             <div class="add_box">
-                <i-button type="primary">添加角色</i-button>
+                <i-button type="primary" @click="showAddModel">添加角色</i-button>
             </div>
         </div>
 
         <Table border :columns="columns" :data="list" class="base_table">
             <template slot-scope="{ row, index }" slot="action">
                 <Button type="primary" size="small" style="margin-right: 5px" @click="edit(row)">编辑</Button>
-                <Button type="primary" size="small" style="margin-right: 5px" @click="auth(row)">权限</Button>
-                <Button type="warning" size="small" @click="remove(index)">删除</Button>
             </template>
         </Table>
 
         <Page :total="page" show-elevator @on-change="pageChange"/>
 
-        <Modal v-model="editModel" width="400" @on-ok="handleSubmit('formRole')">
+        <Modal v-model="addModel" width="400" @on-ok="handleSubmit('addForm')">
             <div slot="header">
                 <span>编辑用户</span>
             </div>
             <div class="edit_form">
-                <Form ref="formRole" :model="formRole" :label-width="60">
+                <Form ref="addForm" :model="formRole" :label-width="60">
                     <FormItem label="角色" prop="role">
                         <Input type="text" v-model="formRole.role"></Input>
                     </FormItem>
@@ -56,20 +51,17 @@
         </Modal>
 
 
-        <Modal v-model="editModel" width="400" @on-ok="handleSubmit('formRole')">
+        <Modal v-model="editModel" width="400" @on-ok="handleSubmit('editForm')">
             <div slot="header">
                 <span>编辑用户</span>
             </div>
             <div class="edit_form">
-                <Form ref="formRole" :model="formRole" :label-width="60">
+                <Form ref="editForm" :model="formRole" :label-width="60">
                     <FormItem label="角色" prop="role">
                         <Input type="text" v-model="formRole.role"></Input>
                     </FormItem>
                     <FormItem label="名称" prop="name">
                         <Input type="text" v-model="formRole.name"></Input>
-                    </FormItem>
-                    <FormItem label="编码" prop="code">
-                        <Input type="text" v-model="formRole.code"></Input>
                     </FormItem>
                 </Form>
             </div>
@@ -103,7 +95,7 @@
                         key: "code"
                     },
                     {
-                        title: "Action",
+                        title: "操作",
                         slot: "action",
                         width: 300,
                         align: "center"
@@ -111,8 +103,9 @@
                 ],
                 list: [],
                 editModel: false,
-                formInline: {name: "", role: "", code: ""},
-                formRole: {name: "", role: "", code: ""},
+                addModel: false,
+                formInline: {name: "", role: ""},
+                formRole: {name: "", role: ""},
                 page: 0
             };
         },
@@ -120,7 +113,7 @@
             getRoleList().then(res => {
                 if (res.data.code == 200) {
                     this.list = res.data.data;
-                    this.page = res.data.page.total
+                    this.page = Number(res.data.page.total)
                 }
             });
         },
@@ -131,13 +124,12 @@
             handleSubmit(form) {
                 console.log(form);
             },
-            getListByRules() {
-            },
             edit(row) {
                 this.editModel = true;
                 this.formRole = row;
             },
-            remove() {
+            showAddModel() {
+                this.addModel = true;
             }
         }
     };
@@ -146,12 +138,14 @@
 <style lang="less" scoped>
     .user {
         padding: 0 20px;
-        .top_bar{
+
+        .top_bar {
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
-        .bread_crumb{
+
+        .bread_crumb {
             margin-top: 20px;
             text-align: left;
         }
