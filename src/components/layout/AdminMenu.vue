@@ -26,6 +26,8 @@
                 <Icon type="logo-buffer"/>
                 <span>楼盘管理</span>
             </template>
+            <MenuItem name="3-1" to="/state/list">楼盘列表</MenuItem>
+            <MenuItem name="3-2" to="/state/activty">运营活动</MenuItem>
         </Submenu>
         <Submenu name="4">
             <template slot="title">

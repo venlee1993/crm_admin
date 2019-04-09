@@ -102,3 +102,86 @@ export const getCurrentUser = () => {
         })
     })
 }
+
+export const addRole = (data) => {
+    return new Promise(function (resolve, reject) {
+        xhr({
+            url: '/role/add',
+            method: 'POST',
+            data: data,
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(res => {
+            resolve(res)
+        }).catch(error => {
+            reject(error)
+        })
+    })
+}
+
+export const addPermission = (data) => {
+    let params = '';
+    Object.keys(data).forEach(key => {
+        params = params + `${key}=${data[key]}&`
+    })
+    params = params.substring(0, params.lastIndexOf('&'));
+    return new Promise(function (resolve, reject) {
+        xhr.post(`/permission/add?${params}`, data).then(res => {
+            resolve(res)
+        }).catch(error => {
+            reject(error)
+        })
+    })
+}
+
+export const getTowerList = () => {
+    return new Promise(function (resolve, reject) {
+        xhr.post('/tower/list').then(res => {
+            resolve(res)
+        }).catch(error => {
+            reject(error)
+        })
+    })
+}
+
+
+export const addTower = (data) => {
+    let formdata = new FormData()
+    Object.keys(data).forEach(key => {
+        formdata.append(key, data[key])
+    })
+    return new Promise(function (resolve, reject) {
+        xhr.post('/tower/add', formdata).then(res => {
+            resolve(res)
+        }).catch(error => {
+            reject(error)
+        })
+    })
+}
+
+
+export const getActivtyList = () => {
+    return new Promise(function (resolve, reject) {
+        xhr.post('/tower/activity/list').then(res => {
+            resolve(res)
+        }).catch(error => {
+            reject(error)
+        })
+    })
+}
+
+export const activetyAdd = (data) => {
+    let formdata = new FormData();
+    Object.keys(data).forEach(key => {
+        formdata.append(key, data[key])
+    })
+    return new Promise(function (resolve, reject) {
+        xhr.post('/tower/activity/add', formdata).then(res => {
+            resolve(res)
+        }).catch(error => {
+            reject(error)
+        })
+    })
+}
+

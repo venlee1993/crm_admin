@@ -34,37 +34,32 @@
         </Table>
 
 
-        <Modal v-model="addModal" width="400" @on-ok="handleSubmit('editUserForm')">
+        <Modal v-model="addModal" width="400" @on-ok="handleSubmit('addForm')">
             <div slot="header">
                 <span>添加权限</span>
             </div>
             <div class="add_form">
                 <Form ref="addForm" :model="addForm" :label-width="60">
                     <FormItem label="名称" prop="name">
-                        <Input type="text" v-model="addForm.realName"></Input>
+                        <Input type="text" v-model="addForm.name"></Input>
                     </FormItem>
                     <FormItem label="权限" prop="permission">
-                        <Input type="text" v-model="addForm.gender"></Input>
+                        <Input type="text" v-model="addForm.permission"></Input>
                     </FormItem>
                     <FormItem label="类型" prop="resourceType">
-                        <Input type="text" v-model="addForm.mobile"></Input>
-                    </FormItem>
-                    <FormItem label="父节点">
-                        <Select v-model="permission">
-                            <Option v-for="item in pid" :value="item.objectId" :key="item.name">{{ item.name }}
-                            </Option>
+                        <Select v-model="addForm.resourceType">
+                            <Option value="MENU">MENU</Option>
+                            <Option value="BUTTON">BUTTON</Option>
                         </Select>
                     </FormItem>
                 </Form>
             </div>
         </Modal>
-
-
     </div>
 </template>
 
 <script>
-    import {getPermissionList} from '../../service/api'
+    import {getPermissionList, addPermission} from '../../service/api'
 
     export default {
         name: "Policy",
@@ -78,10 +73,10 @@
                         title: "ID",
                         key: "objectId"
                     },
-                    {
-                        title: "PID",
-                        key: "parentId"
-                    },
+                    // {
+                    //     title: "PID",
+                    //     key: "parentId"
+                    // },
                     {
                         title: "名称",
                         key: "name"
@@ -100,23 +95,17 @@
                         align: "center"
                     }
                 ],
-                addForm: {},
+                addForm: {
+                    name: '',
+                    permission: '',
+                    resourceType: ''
+                },
                 list: [],
-                permission: ''
+                loading: true
             }
         },
         mounted() {
-            getPermissionList().then(res => {
-                if (res.data.code == 200) {
-                    this.list = res.data.data;
-                    this.loading = false;
-                }
-            })
-        },
-        computed: {
-            pid() {
-                return this.list.filter(item => item.resourceType == 'MENU');
-            }
+            this.getList();
         },
         methods: {
             showAddForm() {
@@ -124,6 +113,23 @@
             },
             detail() {
                 console.log(this.pid);
+            },
+            handleSubmit(form) {
+                if (form == 'addForm') {
+                    addPermission(this.addForm).then(res => {
+                        if (res.data.code == 200) {
+                            this.getList();
+                        }
+                    })
+                }
+            },
+            getList() {
+                getPermissionList().then(res => {
+                    if (res.data.code == 200) {
+                        this.list = res.data.data;
+                        this.loading = false;
+                    }
+                })
             }
         }
     }

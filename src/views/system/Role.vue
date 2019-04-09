@@ -35,7 +35,7 @@
             <div slot="header">
                 <span>编辑用户</span>
             </div>
-            <div class="edit_form">
+            <div class="add_form">
                 <Form ref="addForm" :model="formRole" :label-width="60">
                     <FormItem label="角色" prop="role">
                         <Input type="text" v-model="formRole.role"></Input>
@@ -50,28 +50,11 @@
             </div>
         </Modal>
 
-
-        <Modal v-model="editModel" width="400" @on-ok="handleSubmit('editForm')">
-            <div slot="header">
-                <span>编辑用户</span>
-            </div>
-            <div class="edit_form">
-                <Form ref="editForm" :model="formRole" :label-width="60">
-                    <FormItem label="角色" prop="role">
-                        <Input type="text" v-model="formRole.role"></Input>
-                    </FormItem>
-                    <FormItem label="名称" prop="name">
-                        <Input type="text" v-model="formRole.name"></Input>
-                    </FormItem>
-                </Form>
-            </div>
-        </Modal>
-
     </div>
 </template>
 
 <script>
-    import {getRoleList} from "../../service/api";
+    import {getRoleList, addRole} from "../../service/api";
 
     export default {
         name: "User",
@@ -94,35 +77,36 @@
                         title: "编码",
                         key: "code"
                     },
-                    {
-                        title: "操作",
-                        slot: "action",
-                        width: 300,
-                        align: "center"
-                    }
+                    // {
+                    //     title: "操作",
+                    //     slot: "action",
+                    //     width: 300,
+                    //     align: "center"
+                    // }
                 ],
                 list: [],
                 editModel: false,
                 addModel: false,
                 formInline: {name: "", role: ""},
-                formRole: {name: "", role: ""},
+                formRole: {name: "", role: "", code: ""},
                 page: 0
             };
         },
         created() {
-            getRoleList().then(res => {
-                if (res.data.code == 200) {
-                    this.list = res.data.data;
-                    this.page = Number(res.data.page.total)
-                }
-            });
+            this.getList();
         },
         methods: {
             pageChange(index) {
                 console.log(index);
             },
             handleSubmit(form) {
-                console.log(form);
+                if (form == 'addForm') {
+                    addRole(this.formRole).then(res => {
+                        if (res.data.code == 200) {
+                            this.getList();
+                        }
+                    })
+                }
             },
             edit(row) {
                 this.editModel = true;
@@ -130,6 +114,14 @@
             },
             showAddModel() {
                 this.addModel = true;
+            },
+            getList() {
+                getRoleList().then(res => {
+                    if (res.data.code == 200) {
+                        this.list = res.data.data;
+                        this.page = Number(res.data.page.total)
+                    }
+                });
             }
         }
     };

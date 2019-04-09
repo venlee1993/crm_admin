@@ -42,7 +42,26 @@ const router = new Router({
                     component: () => import('../views/system/Policy')
                 },
             ]
+        },
+
+        {
+            path: '/state',
+            name: 'state',
+            component: Layout,
+            children: [
+                {
+                    path: 'list',
+                    name: 'statelist',
+                    component: () => import('../views/state/List')
+                },
+                {
+                    path: 'activty',
+                    name: 'stateactivty',
+                    component: () => import('../views/state/Activty')
+                },
+            ]
         }
+
     ]
 })
 
