@@ -40,6 +40,7 @@
                 <Icon type="ios-timer"/>
                 <span>策略管理</span>
             </template>
+            <MenuItem name="5-1" to="/strategy/list">策略列表</MenuItem>
         </Submenu>
         <Submenu name="6">
             <template slot="title">

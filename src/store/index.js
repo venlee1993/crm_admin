@@ -37,7 +37,7 @@ export default new Vuex.Store({
                     getCurrentUser().then(res => {
                         if (res.data.code == 200) {
                             commit('INIT_USER', res.data.data)
-                            resolve(res.data)
+                            resolve(res)
                         }
                     }).catch(error => {
                         reject(error)

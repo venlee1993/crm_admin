@@ -5,7 +5,7 @@ import qs from 'qs'
 const xhr = axios.create({
     baseURL: 'http://tuan.xidawu.net:9527',
     timeout: 3000,
-    withCredentials: true
+    withCredentials: true,
 })
 
 
@@ -127,7 +127,12 @@ export const addPermission = (data) => {
     })
     params = params.substring(0, params.lastIndexOf('&'));
     return new Promise(function (resolve, reject) {
-        xhr.post(`/permission/add?${params}`, data).then(res => {
+        xhr.post(`/permission/add`, qs.stringify(data),
+            {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            }).then(res => {
             resolve(res)
         }).catch(error => {
             reject(error)
@@ -185,3 +190,47 @@ export const activetyAdd = (data) => {
     })
 }
 
+
+export const houseImport = (towerId, data) => {
+    return new Promise(function (resolve, reject) {
+        xhr.post(`/house/import?towerId=${towerId}`, data).then(res => {
+            resolve(res)
+        }).catch(error => {
+            reject(error)
+        })
+    })
+}
+
+//策略列表
+export const strategyList = () => {
+    return new Promise(function (resolve, reject) {
+        xhr.post(`/strategy/list`).then(res => {
+            resolve(res)
+        }).catch(error => {
+            reject(error)
+        })
+    })
+}
+
+
+//富文本上传图片
+export const richUpload = (data) => {
+    return new Promise(function (resolve, reject) {
+        xhr.post(`/tower/rich/upload`, data).then(res => {
+            resolve(res)
+        }).catch(error => {
+            reject(error)
+        })
+    })
+}
+
+
+export const addStrategy = (data) => {
+    return new Promise(function (resolve, reject) {
+        xhr.post(`/strategy/add`, data).then(res => {
+            resolve(res)
+        }).catch(error => {
+            reject(error)
+        })
+    })
+}

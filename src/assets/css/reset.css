@@ -8,35 +8,45 @@ ul, ul li {
 }
 
 
-
-
-
-.ivu-layout-header{
+.ivu-layout-header {
     height: 40px;
     line-height: 40px;
 }
 
 
-.ivu-layout-sider{
+.ivu-layout-sider {
     background-color: rgb(35, 35, 35)
 }
 
-.ivu-menu-dark{
+.ivu-menu-dark {
     background-color: transparent
 }
 
-.menu-icon{
+.menu-icon {
     color: white;
 }
 
-.collapsed-menu .ivu-menu{
+.collapsed-menu .ivu-menu {
     display: none;
 }
 
-.collapsed-menu .ivu-menu-submenu-title-icon{
+.collapsed-menu .ivu-menu-submenu-title-icon {
     display: none;
 }
 
-.ivu-menu-dark.ivu-menu-vertical .ivu-menu-item, .ivu-menu-dark.ivu-menu-vertical .ivu-menu-submenu-title{
+.ivu-menu-dark.ivu-menu-vertical .ivu-menu-item, .ivu-menu-dark.ivu-menu-vertical .ivu-menu-submenu-title {
     text-align: left;
+}
+
+.action_box button {
+    margin-right: 20px;
+}
+
+.action_box button:last-child {
+    margin-right: 0;
+}
+
+.form_inner {
+    width: 80%;
+    margin: 0 auto;
 }

@@ -7,22 +7,19 @@
         </Breadcrumb>
 
         <div class="action_bar">
-            <i-button type="primary" @click="showAddForm">添加</i-button>
-            <i-button type="warning">
+            <Button type="primary" @click="addModal=true">添加</Button>
+            <Button type="warning">
                 <a href="http://tuan.xidawu.net:9527/house/template" style="color: white">下载房产导入模板</a>
-            </i-button>
+            </Button>
         </div>
 
         <Table border :columns="columns" :data="list" class="base_table" :loading="loading">
             <template slot-scope="{ row, index }" slot="download">
-                <Upload
-                        :action="`http://tuan.xidawu.net:9527/house/import?towerId=${row.objectId}`"
-                        :headers="{'Content-Type': 'multipart/form-data','Accept': 'application/json'}"
-                        :with-credentials="true"
-                >
-                    <i-button type="primary" icon="ios-cloud-upload-outline">导入房源</i-button>
-                </Upload>
-                <i-button type="primary" @click="publish(row.objectId)">发布活动</i-button>
+                <label for="file" class="uploader">
+                    <input type="file" value="上传" id="file" @change="uploadAction(row.objectId)">
+                    <span>导入房产</span>
+                </label>
+                <Button type="warning" @click="publish(row.objectId)">发布活动</Button>
             </template>
         </Table>
 
@@ -74,8 +71,13 @@
                     <FormItem label="海报" prop="file">
                         <Input type="text" v-model="publishForm.file"></Input>
                     </FormItem>
-                    <FormItem label="内容" prop="resourceType">
-                        <vue-editor v-model="publishForm.content" :editorToolbar="customToolbar"></vue-editor>
+                    <FormItem label="内容" prop="content">
+                        <vue-editor
+                                v-model="publishForm.content"
+                                :editorToolbar="customToolbar"
+                                useCustomImageHandler
+                                @imageAdded="handleImageAdded"
+                        ></vue-editor>
                     </FormItem>
                 </Form>
             </div>
@@ -85,71 +87,24 @@
 </template>
 
 <script>
-    import {getTowerList, addTower, activetyAdd} from "../../service/api";
+    import {getTowerList, addTower, activetyAdd, houseImport, richUpload} from "../../service/api";
     import {VueEditor} from "vue2-editor";
+    import config from './config'
+    import editorConfig from './editorConfig'
 
     export default {
         name: "List",
         data() {
             return {
-                columns: [
-                    {
-                        title: "序号",
-                        type: "index",
-                        width: 60,
-                        align: "center"
-                    },
-                    {
-                        title: "用户名",
-                        key: "name"
-                    },
-                    {
-                        title: "联系人",
-                        key: "contacts"
-                    },
-                    {
-                        title: "电话",
-                        key: "tel"
-                    },
-                    {
-                        title: "房产数量",
-                        key: "houseCount"
-                    },
-                    {
-                        title: "地址",
-                        key: "address"
-                    },
-                    {
-                        title: "项目号",
-                        key: "projectNo"
-                    },
-                    {
-                        title: "操作",
-                        slot: "download",
-                        width: 400,
-                        align: "center"
-                    }
-                ],
                 list: [],
+                columns: config,
                 loading: true,
                 addModal: false,
                 publishModal: false,
                 publishForm: {},
-                addForm: {
-                    projectNo: '',
-                    landArea: '',
-                    address: '',
-                    landArea: '',
-                    buildArea: '',
-                    parkingSpaceCounts: '',
-                    tel: '',
-                },
+                addForm: {},
                 addRules: {},
-                customToolbar: [
-                    ['bold', 'italic', 'underline'],
-                    [{'list': 'ordered'}, {'list': 'bullet'}],
-                    ['image', 'code-block']
-                ]
+                customToolbar: editorConfig
             }
         },
         components: {
@@ -167,15 +122,13 @@
                     }
                 })
             },
-            showAddForm() {
-                this.addModal = true;
-            },
-            download(id) {
-
-            },
             submitAdd() {
                 addTower(this.addForm).then(res => {
-                    console.log(res);
+                    if (res.data.code == 200) {
+                        this.$Message.success('添加楼盘成功');
+                    } else {
+                        this.$Message.success('添加楼盘失败');
+                    }
                 })
             },
             publish() {
@@ -183,14 +136,42 @@
             },
             publishSubmit() {
                 activetyAdd(this.publishForm).then(res => {
-                    console.log(res);
+                    if (res.data.code == 200) {
+                        if (res.data.code == 200) {
+                            this.$Message.success('发布成功');
+                        } else {
+                            this.$Message.error('发布失败');
+                        }
+                    }
+                })
+            },
+            uploadAction(id) {
+                let file = event.target.files[0];
+                let formdata = new FormData();
+                formdata.append('file', file)
+                houseImport(id, formdata).then(res => {
+                    if (res.data.code == 200) {
+                        this.$Message.success('上传Excel成功');
+                    } else {
+                        this.$Message.error('上传失败');
+                    }
+                })
+            },
+            handleImageAdded(file, Editor, cursorLocation, resetUploader) {
+                let formData = new FormData()
+                formData.append('file', file)
+                richUpload(formData).then(res => {
+                    if (res.data.code == 200) {
+                        Editor.insertEmbed(cursorLocation, 'image', res.data.data);
+                        resetUploader();
+                    }
                 })
             }
         }
     }
 </script>
 
-<style scoped>
+<style lang="less" scoped>
 
     .list {
         padding: 0 20px;
@@ -209,5 +190,32 @@
 
     .action_bar button {
         margin-left: 20px;
+    }
+
+    .uploader {
+        display: inline-block;
+        position: relative;
+        margin-right: 20px;
+        vertical-align: middle;
+
+        span {
+            display: block;
+            background: #2d8cf0;
+            padding: 6px 15px 6px;
+            color: white;
+            font-weight: 400;
+            font-size: 12px;
+            touch-action: manipulation;
+            user-select: none;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
+
+        input {
+            position: absolute;
+            display: block;
+            width: 100%;
+            z-index: -1;
+        }
     }
 </style>

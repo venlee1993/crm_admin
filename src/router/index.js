@@ -60,6 +60,19 @@ const router = new Router({
                     component: () => import('../views/state/Activty')
                 },
             ]
+        },
+
+        {
+            path: '/strategy',
+            name: 'strategy',
+            component: Layout,
+            children: [
+                {
+                    path: 'list',
+                    name: 'strategy_list',
+                    component: () => import('../views/strategy/List')
+                }
+            ]
         }
 
     ]
@@ -71,7 +84,7 @@ router.beforeEach((to, form, next) => {
     //没有用户信息，获取后跳转//
     if (store.getters.user == null && to.name !== 'login') {
         store.dispatch('getUserInfo').then(res => {
-            if (res.code == 200) {
+            if (res.data.code == 200) {
                 next();
             } else {
                 next({name: 'login'})
