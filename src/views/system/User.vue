@@ -68,25 +68,6 @@
             <div class="role_form">
                 <Form ref="userForm" :model="addUserForm" :label-width="100" :rules="addUserRules">
                     <div class="form_inner">
-                        <div class="avatar">
-                            <!--                            <Upload-->
-                            <!--                                    v-ref:upload-->
-                            <!--                                    :show-upload-list="false"-->
-                            <!--                                    :default-file-list="defaultList"-->
-                            <!--                                    :on-success="handleSuccess"-->
-                            <!--                                    :format="['jpg','jpeg','png']"-->
-                            <!--                                    :max-size="2048"-->
-                            <!--                                    :on-format-error="handleFormatError"-->
-                            <!--                                    :on-exceeded-size="handleMaxSize"-->
-                            <!--                                    :before-upload="handleBeforeUpload"-->
-                            <!--                                    multiple-->
-                            <!--                                    type="drag"-->
-                            <!--                                    class="uploader">-->
-                            <!--                                <div class="preview">-->
-                            <!--                                    <span>上传图像</span>-->
-                            <!--                                </div>-->
-                            <!--                            </Upload>-->
-                        </div>
                         <div class="info" inline>
                             <FormItem label="用户姓名" prop="username">
                                 <Input type="text" v-model="addUserForm.username"></Input>

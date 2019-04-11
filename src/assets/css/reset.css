@@ -50,3 +50,26 @@ ul, ul li {
     width: 80%;
     margin: 0 auto;
 }
+
+
+.bread_crumb {
+    text-align: left;
+    margin: 20px 0;
+}
+
+.contain {
+    padding: 0 20px;
+}
+
+.action_column {
+    text-align: left;
+}
+
+.button_page {
+    margin-top: 20px;
+}
+
+.modal_inner {
+    width: 90%;
+    margin: 0 auto;
+}

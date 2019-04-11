@@ -13,7 +13,7 @@
             <template slot-scope="{ row, index }" slot="action">
                 <div class="action_box">
                     <Button type="primary">更新</Button>
-                    <Button type="warning">删除</Button>
+                    <Button type="warning" @click="deleteRow(row.objectId)">删除</Button>
                 </div>
             </template>
         </Table>
@@ -48,9 +48,8 @@
 </template>
 
 <script>
-    import {strategyList, addStrategy} from '../../service/api'
-    import columns from './config'
-    import addrules from './validate.add'
+    import {strategyList, addStrategy, deleteStrategy} from '../../service/api'
+    import {columns, rules} from './config'
 
     export default {
         name: "List",
@@ -61,7 +60,7 @@
                 columns: columns,
                 addModal: false,
                 addForm: {name: '', type: '', timespan: ''},
-                addRules: addrules
+                addRules: rules
             }
         },
         mounted() {
@@ -94,6 +93,11 @@
                             }
                         })
                     }
+                })
+            },
+            deleteRow(id) {
+                deleteStrategy(id).then(res => {
+                    console.log(res);
                 })
             }
         }

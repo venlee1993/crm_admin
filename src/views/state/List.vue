@@ -69,7 +69,13 @@
                         <Input type="text" v-model="publishForm.intro"></Input>
                     </FormItem>
                     <FormItem label="海报" prop="file">
-                        <Input type="text" v-model="publishForm.file"></Input>
+                        <label for="post" class="poster">
+                            <div class="preview">
+                                <img :src="previewSrc">
+                            </div>
+                            <Icon type="ios-cloud-upload" size="50" class="upload_icon"/>
+                            <input type="file" value="上传" id="post" @change="preview" ref="poster">
+                        </label>
                     </FormItem>
                     <FormItem label="内容" prop="content">
                         <vue-editor
@@ -89,22 +95,23 @@
 <script>
     import {getTowerList, addTower, activetyAdd, houseImport, richUpload} from "../../service/api";
     import {VueEditor} from "vue2-editor";
-    import config from './config'
-    import editorConfig from './editorConfig'
+    import {columns, options} from './config'
 
     export default {
         name: "List",
         data() {
             return {
                 list: [],
-                columns: config,
+                columns: columns,
                 loading: true,
                 addModal: false,
                 publishModal: false,
                 publishForm: {},
                 addForm: {},
                 addRules: {},
-                customToolbar: editorConfig
+                towerId: '',
+                previewSrc: '',
+                customToolbar: options
             }
         },
         components: {
@@ -131,11 +138,13 @@
                     }
                 })
             },
-            publish() {
+            publish(id) {
                 this.publishModal = true
+                this.towerId = id;
             },
             publishSubmit() {
-                activetyAdd(this.publishForm).then(res => {
+                let files = this.$refs.poster.files[0]
+                activetyAdd(this.publishForm, this.towerId, files).then(res => {
                     if (res.data.code == 200) {
                         if (res.data.code == 200) {
                             this.$Message.success('发布成功');
@@ -166,6 +175,15 @@
                         resetUploader();
                     }
                 })
+            },
+            preview() {
+                let that = this
+                let image = event.target.files[0];
+                let reader = new FileReader();
+                reader.readAsDataURL(image)
+                reader.onload = function (e) {
+                    that.previewSrc = this.result;
+                }
             }
         }
     }
@@ -177,11 +195,6 @@
         padding: 0 20px;
     }
 
-    .bread_crumb {
-        margin-top: 20px;
-        text-align: left;
-        margin-bottom: 20px;
-    }
 
     .action_bar {
         text-align: left;
@@ -190,6 +203,10 @@
 
     .action_bar button {
         margin-left: 20px;
+    }
+
+    .action_bar button:first-child {
+        margin-left: 0;
     }
 
     .uploader {
@@ -216,6 +233,49 @@
             display: block;
             width: 100%;
             z-index: -1;
+        }
+    }
+
+    .poster {
+        display: block;
+        border: 1px solid #dcdee2;
+        width: 200px;
+        height: 200px;
+        position: relative;
+        overflow: hidden;
+
+        input {
+            position: absolute;
+            display: block;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            visibility: hidden;
+        }
+
+        .upload_icon {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            margin-left: -25px;
+            margin-top: -25px;
+            color: #dcdee2;
+        }
+
+        .preview {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 2;
+
+            img {
+                display: block;
+                max-width: 100%;
+                max-height: 100%;
+            }
         }
     }
 </style>

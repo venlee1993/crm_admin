@@ -73,6 +73,19 @@ const router = new Router({
                     component: () => import('../views/strategy/List')
                 }
             ]
+        },
+
+        {
+            path: '/customer',
+            name: 'customer',
+            component: Layout,
+            children: [
+                {
+                    path: 'list',
+                    name: 'customer_list',
+                    component: () => import('../views/customer/List')
+                }
+            ]
         }
 
     ]

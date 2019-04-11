@@ -6,6 +6,9 @@ const xhr = axios.create({
     baseURL: 'http://tuan.xidawu.net:9527',
     timeout: 3000,
     withCredentials: true,
+    headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+    }
 })
 
 
@@ -121,18 +124,8 @@ export const addRole = (data) => {
 }
 
 export const addPermission = (data) => {
-    let params = '';
-    Object.keys(data).forEach(key => {
-        params = params + `${key}=${data[key]}&`
-    })
-    params = params.substring(0, params.lastIndexOf('&'));
     return new Promise(function (resolve, reject) {
-        xhr.post(`/permission/add`, qs.stringify(data),
-            {
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                }
-            }).then(res => {
+        xhr.post(`/permission/add`, qs.stringify(data)).then(res => {
             resolve(res)
         }).catch(error => {
             reject(error)
@@ -176,11 +169,13 @@ export const getActivtyList = () => {
     })
 }
 
-export const activetyAdd = (data) => {
+export const activetyAdd = (data, towerId, file) => {
     let formdata = new FormData();
     Object.keys(data).forEach(key => {
         formdata.append(key, data[key])
     })
+    formdata.append('file', file)
+    formdata.append('towerId', towerId)
     return new Promise(function (resolve, reject) {
         xhr.post('/tower/activity/add', formdata).then(res => {
             resolve(res)
@@ -225,9 +220,43 @@ export const richUpload = (data) => {
 }
 
 
+//添加策略
 export const addStrategy = (data) => {
     return new Promise(function (resolve, reject) {
         xhr.post(`/strategy/add`, data).then(res => {
+            resolve(res)
+        }).catch(error => {
+            reject(error)
+        })
+    })
+}
+
+//删除策略
+export const deleteStrategy = (objectId) => {
+    return new Promise(function (resolve, reject) {
+        xhr.post(`/tower/activity/delete`, qs.stringify({objectId: objectId})).then(res => {
+            resolve(res)
+        }).catch(error => {
+            reject(error)
+        })
+    })
+}
+
+//客户列表
+export const customerList = () => {
+    return new Promise(function (resolve, reject) {
+        xhr.post(`/customer/list`).then(res => {
+            resolve(res)
+        }).catch(error => {
+            reject(error)
+        })
+    })
+}
+
+
+export const addCustomer = (data) => {
+    return new Promise(function (resolve, reject) {
+        xhr.post(`/customer/add`, qs.stringify(data)).then(res => {
             resolve(res)
         }).catch(error => {
             reject(error)

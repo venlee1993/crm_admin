@@ -1,4 +1,4 @@
-export default [
+export const columns = [
     {
         title: "序号",
         type: "index",
@@ -33,6 +33,42 @@ export default [
         title: "操作",
         slot: "download",
         width: 400,
+        align: "center"
+    }
+]
+
+export const options = [
+    ['bold', 'italic', 'underline'],
+    [{'list': 'ordered'}, {'list': 'bullet'}],
+    ['image', 'code-block']
+]
+
+
+export const activty = [
+    {
+        title: "标题",
+        key: "title"
+    },
+    {
+        title: "简介",
+        key: "intro"
+    },
+    {
+        title: "海报",
+        slot: "poster",
+        align: "center"
+    },
+    {
+        title: "内容",
+        key: "content"
+    },
+    {
+        title: "状态",
+        key: "status"
+    },
+    {
+        title: "状态",
+        slot: "action",
         align: "center"
     }
 ]
