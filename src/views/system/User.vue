@@ -31,7 +31,9 @@
             </template>
             <template slot-scope="{ row, index }" slot="action">
                 <Button type="info" size="small" style="margin-right: 5px" @click="detail(row)">详情</Button>
-                <Button type="success" size="small" style="margin-right: 5px" @click="disable(row)" v-if="row.status=='ENABLE'">禁用</Button>
+                <Button type="success" size="small" style="margin-right: 5px" @click="disable(row)"
+                        v-if="row.status=='ENABLE'">禁用
+                </Button>
                 <Button type="success" size="small" style="margin-right: 5px" @click="enable(row)" v-else>启用</Button>
                 <Button type="primary" size="small" style="margin-right: 5px" @click="userEdit(row)">编辑</Button>
             </template>
@@ -100,91 +102,21 @@
 
 <script>
     import {getUserList, getRoleList, addUser} from "../../service/api";
+    import {columns, addRules} from "./user";
 
     export default {
         name: "User",
         data() {
             return {
-                columns: [
-                    {
-                        title: "序号",
-                        type: "index",
-                        width: 60,
-                        align: "center"
-                    },
-                    {
-                        title: "用户名",
-                        key: "username"
-                    },
-                    {
-                        title: "昵称",
-                        key: "nickname"
-                    },
-                    {
-                        title: "姓名",
-                        key: "realName"
-                    },
-                    {
-                        title: "性别",
-                        slot: "gender"
-                    },
-                    {
-                        title: "手机号",
-                        key: "mobile"
-                    },
-                    {
-                        title: "状态",
-                        slot: "status"
-                    },
-                    {
-                        title: "操作",
-                        slot: "action",
-                        width: 300,
-                        align: "center"
-                    }
-                ],
+                columns: columns,
                 list: [],
-                searchForm: {
-                    username: "",
-                    mobile: ""
-                },
+                searchForm: {username: "", mobile: ""},
                 pageTotal: 0,
                 editModel: false,
                 userModal: false,
-                editUserForm: {
-                    realName: '',
-                    gender: '',
-                    mobile: '',
-                    idNo: ''
-                },
-                addUserForm: {
-                    username: '',
-                    nickname: '',
-                    mobile: '',
-                    password: '',
-                    roles: '',
-                    idNo: ''
-                },
-                addUserRules: {
-                    username: [
-                        {required: true, message: '请输入用户名', trigger: 'blur'}
-                    ],
-                    nickname: [
-                        {required: true, message: '请输入昵称', trigger: 'blur'}
-                    ],
-                    mobile: [
-                        {required: true, message: '电话', trigger: 'blur'},
-                    ],
-                    password: [
-                        {required: true, message: '密码', trigger: 'blur'},
-                    ],
-                    roles: [
-                        {required: true, message: '请选择角色', trigger: 'blur'},
-                    ],
-                    idNo: [
-                        {required: true, message: '请输入身份证', trigger: 'blur'},
-                    ]
-                },
+                editUserForm: {realName: '', gender: '', mobile: '', idNo: ''},
+                addUserForm: {username: '', nickname: '', mobile: '', password: '', roles: '', idNo: ''},
+                addUserRules: addRules,
                 allRoles: [],
                 loading: true
             };
@@ -224,7 +156,7 @@
                 this.editModel = true;
                 this.editUserForm = row;
             },
-            //添加用户
+
             addUser() {
                 this.userModal = true;
                 let data = JSON.parse(JSON.stringify(this.addUserForm))

@@ -1,57 +1,43 @@
 export const columns = [
     {
-        title: "姓名",
-        key: "name"
+        title: "序号",
+        type: "index",
+        width: 60,
+        align: "center"
     },
     {
-        title: "年龄",
-        key: "ageRange"
+        title: "用户名",
+        key: "username"
+    },
+    {
+        title: "昵称",
+        key: "nickname"
+    },
+    {
+        title: "姓名",
+        key: "realName"
     },
     {
         title: "性别",
         slot: "gender"
     },
     {
-        title: "身份证号",
-        key: "idNo"
-    },
-    {
-        title: "意向房型",
-        key: "intentionHouseType"
-    },
-    {
-        title: "电话",
+        title: "手机号",
         key: "mobile"
     },
     {
-        title: "地区",
-        key: "region"
-    },
-    {
-        title: "来源",
-        key: "source"
-    },
-    {
         title: "状态",
-        key: "status"
-    },
-    {
-        title: "置业顾问",
-        key: "registedBy"
+        slot: "status"
     },
     {
         title: "操作",
         slot: "action",
-        width: '300',
-        align: 'center'
-    },
+        width: 300,
+        align: "center"
+    }
 ]
 
-
-export const ageArea = ['20以下', '20-25', '25-30', '30-35','35-40','40以上']
-
-
-export const rules = {
+export const addRules = {
     username: [
         {required: true, message: '请输入用户名', trigger: 'blur'}
     ],

@@ -263,3 +263,15 @@ export const addCustomer = (data) => {
         })
     })
 }
+
+
+
+export const houseList = () => {
+    return new Promise(function (resolve, reject) {
+        xhr.post(`/house/type/list`).then(res => {
+            resolve(res)
+        }).catch(error => {
+            reject(error)
+        })
+    })
+}

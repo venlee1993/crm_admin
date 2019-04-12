@@ -36,7 +36,7 @@
             </template>
             <MenuItem name="4-1" to="/customer/list">客户列表</MenuItem>
             <MenuItem name="4-2" to="/customer/visit">回访记录</MenuItem>
-            <MenuItem name="4-3" to="/customer/history">来访记录</MenuItem>
+            <MenuItem name="4-3" to="/customer/history">跟踪记录</MenuItem>
         </Submenu>
         <Submenu name="5">
             <template slot="title">

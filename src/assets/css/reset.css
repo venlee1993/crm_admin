@@ -73,3 +73,8 @@ ul, ul li {
     width: 90%;
     margin: 0 auto;
 }
+
+.ivu-steps .ivu-steps-title {
+    margin-top: 3px;
+    margin-bottom: 0;
+}
