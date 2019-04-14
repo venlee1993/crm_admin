@@ -4,16 +4,20 @@ export const columns = [
         key: "objectId"
     },
     {
+        title: "策略名称",
+        key: "name"
+    },
+    {
         title: "类型",
-        key: "type"
+        slot: "type"
     },
     {
         title: "创建者",
         key: "username"
     },
     {
-        title: "创建者",
-        key: "createdAt"
+        title: "提醒周期(天)",
+        key: "timespan"
     },
     {
         title: "操作",

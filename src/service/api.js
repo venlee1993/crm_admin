@@ -19,7 +19,7 @@ xhr.interceptors.response.use(response => {
         return response
     }
 }, error => {
-    reject(error)
+    router.push('/user/login')
 })
 
 
@@ -58,6 +58,19 @@ export const getUserList = (data) => {
 }
 
 
+export const getUserByRole = (role = 'SALES') => {
+    return new Promise(function (resolve, reject) {
+        xhr.post('/user/list-by-role', qs.stringify({
+            role: role
+        })).then(res => {
+            resolve(res)
+        }).catch(error => {
+            reject(error)
+        })
+    })
+}
+
+
 export const addUser = (data) => {
     return new Promise(function (resolve, reject) {
         xhr({
@@ -86,9 +99,12 @@ export const getRoleList = () => {
     })
 }
 
-export const getPermissionList = () => {
+export const getPermissionList = (pageIndex = 1, pageSize = 10) => {
     return new Promise(function (resolve, reject) {
-        xhr.post('/permission/list').then(res => {
+        xhr.post('/permission/list', qs.stringify({
+            pageIndex: pageIndex,
+            pageSize: pageSize
+        })).then(res => {
             resolve(res)
         }).catch(error => {
             reject(error)
@@ -223,7 +239,7 @@ export const richUpload = (data) => {
 //添加策略
 export const addStrategy = (data) => {
     return new Promise(function (resolve, reject) {
-        xhr.post(`/strategy/add`, data).then(res => {
+        xhr.post(`/strategy/add`, qs.stringify(data)).then(res => {
             resolve(res)
         }).catch(error => {
             reject(error)
@@ -234,18 +250,37 @@ export const addStrategy = (data) => {
 //删除策略
 export const deleteStrategy = (objectId) => {
     return new Promise(function (resolve, reject) {
-        xhr.post(`/tower/activity/delete`, qs.stringify({objectId: objectId})).then(res => {
+        xhr.post(`/strategy/delete`, qs.stringify({objectId: objectId})).then(res => {
             resolve(res)
         }).catch(error => {
             reject(error)
         })
     })
 }
+
+//删除更新
+export const strategyUpdate = (data) => {
+    return new Promise(function (resolve, reject) {
+        xhr.post(`/strategy/update`, qs.stringify(data)).then(res => {
+            resolve(res)
+        }).catch(error => {
+            reject(error)
+        })
+    })
+}
+
 
 //客户列表
-export const customerList = () => {
+export const customerList = (rules, pageIndex, pageSize) => {
     return new Promise(function (resolve, reject) {
-        xhr.post(`/customer/list`).then(res => {
+        xhr.post(`/customer/list`, qs.stringify({
+            feilds: Object.keys(rules),
+            values: Object.values(rules),
+            pageIndex: pageIndex,
+            pageSize: pageSize
+        }, {
+            indices: false
+        })).then(res => {
             resolve(res)
         }).catch(error => {
             reject(error)
@@ -253,7 +288,7 @@ export const customerList = () => {
     })
 }
 
-
+//添加客户
 export const addCustomer = (data) => {
     return new Promise(function (resolve, reject) {
         xhr.post(`/customer/add`, qs.stringify(data)).then(res => {
@@ -264,11 +299,107 @@ export const addCustomer = (data) => {
     })
 }
 
+//更新客户
+export const updateCustomer = (data) => {
+    return new Promise(function (resolve, reject) {
+        xhr.post(`/customer/update`, qs.stringify(data)).then(res => {
+            resolve(res)
+        }).catch(error => {
+            reject(error)
+        })
+    })
+}
 
 
+//房型列表
 export const houseList = () => {
     return new Promise(function (resolve, reject) {
         xhr.post(`/house/type/list`).then(res => {
+            resolve(res)
+        }).catch(error => {
+            reject(error)
+        })
+    })
+}
+
+//客户交定金
+export const customerReserve = (data) => {
+    return new Promise(function (resolve, reject) {
+        xhr.post(`/customer/reserve`, data).then(res => {
+            resolve(res)
+        }).catch(error => {
+            reject(error)
+        })
+    })
+}
+
+
+//客户按揭
+export const customerPrepay = (data) => {
+    return new Promise(function (resolve, reject) {
+        xhr.post(`/customer/prepay`, qs.stringify(data)).then(res => {
+            resolve(res)
+        }).catch(error => {
+            reject(error)
+        })
+    })
+}
+
+export const customerOrderList = (customerId) => {
+    return new Promise(function (resolve, reject) {
+        xhr.post(`/customer/order/list`, qs.stringify({customerId: customerId})).then(res => {
+            resolve(res)
+        }).catch(error => {
+            reject(error)
+        })
+    })
+}
+
+
+//客户跟踪记录
+export const customerTrack = (rules, pageIndex, pageSize) => {
+    return new Promise(function (resolve, reject) {
+        xhr.post(`/customer/track/list`, qs.stringify({
+            feilds: Object.keys(rules),
+            values: Object.values(rules),
+            pageIndex: pageIndex,
+            pageSize: pageSize
+        }, {
+            indices: false
+        })).then(res => {
+            resolve(res)
+        }).catch(error => {
+            reject(error)
+        })
+    })
+}
+
+//房产联级选择
+export const customerDropdown = () => {
+    return new Promise(function (resolve, reject) {
+        xhr.post(`/customer/dropdown`).then(res => {
+            resolve(res)
+        }).catch(error => {
+            reject(error)
+        })
+    })
+}
+
+
+export const noticeList = (data) => {
+    return new Promise(function (resolve, reject) {
+        xhr.post(`/notice/list`, qs.stringify(data)).then(res => {
+            resolve(res)
+        }).catch(error => {
+            reject(error)
+        })
+    })
+}
+
+
+export const noticeDelete = (data) => {
+    return new Promise(function (resolve, reject) {
+        xhr.post(`/notice/delete`, qs.stringify(data)).then(res => {
             resolve(res)
         }).catch(error => {
             reject(error)

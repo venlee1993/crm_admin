@@ -8,12 +8,19 @@
                     </div>
                     <div>
                         <Icon
-                            @click.native="collapsedSider"
-                            :class="rotateIcon"
-                            :style="{margin: '0 20px'}"
-                            type="md-menu"
-                            size="24"
+                                @click.native="collapsedSider"
+                                :class="rotateIcon"
+                                :style="{margin: '0 20px'}"
+                                type="md-menu"
+                                size="24"
                         ></Icon>
+                    </div>
+                    <div class="top_tool">
+                        <div class="user">
+                            <Badge dot class="notice_tip" :offset="[8,4]">
+                                <Icon type="ios-notifications-outline" size="26" @click="showMessage"></Icon>
+                            </Badge>
+                        </div>
                     </div>
                 </div>
             </Header>
@@ -32,16 +39,25 @@
 
 <script>
     import AdminMenu from "../components/layout/AdminMenu";
+    import {noticeList} from '../service/api'
 
     export default {
         name: "Login",
         data() {
             return {
-                isCollapsed: false
+                isCollapsed: false,
+                message: []
             };
         },
         components: {
             AdminMenu
+        },
+        created() {
+            noticeList({status: 'UNREAD', pageIndex: 1, pageSize: 5}).then(res => {
+                if (res.data.code == 200) {
+                    this.message = res.data.data;
+                }
+            })
         },
         computed: {
             rotateIcon() {
@@ -54,6 +70,15 @@
         methods: {
             collapsedSider() {
                 this.isCollapsed = !this.isCollapsed;
+            },
+            showMessage() {
+                this.message.forEach(item => {
+                    this.$Notice.info({
+                        title: item.title,
+                        desc: item.content
+                    })
+                    console.log(this.$Notice);
+                })
             }
         }
     };
@@ -79,18 +104,36 @@
         width: 200px;
         align-self: center;
     }
-    .layout-logo-left img{
+
+    .layout-logo-left img {
         margin: 0 auto;
         display: block;
     }
+
     .header_inner {
         display: flex;
     }
+
     .menu-icon {
         transition: all 0.3s;
     }
 
     .rotate-icon {
         transform: rotate(-90deg);
+    }
+
+    .top_tool {
+        flex: 1;
+        text-align: right;
+    }
+
+    .user_message {
+        color: white;
+        margin-right: 20px;
+    }
+
+    .notice_tip {
+        margin-right: 20px;
+        color: white;
     }
 </style>

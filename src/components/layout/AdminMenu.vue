@@ -35,8 +35,7 @@
                 <span>客户管理</span>
             </template>
             <MenuItem name="4-1" to="/customer/list">客户列表</MenuItem>
-            <MenuItem name="4-2" to="/customer/visit">回访记录</MenuItem>
-            <MenuItem name="4-3" to="/customer/history">跟踪记录</MenuItem>
+            <MenuItem name="4-3" to="/customer/track">跟踪记录</MenuItem>
         </Submenu>
         <Submenu name="5">
             <template slot="title">
@@ -68,6 +67,13 @@
                 <Icon type="ios-clipboard"/>
                 <span>订单管理</span>
             </template>
+        </Submenu>
+        <Submenu name="10">
+            <template slot="title">
+                <Icon type="ios-chatbubbles"/>
+                <span>消息管理</span>
+            </template>
+            <MenuItem name="10-1" to="/notice/list">消息列表</MenuItem>
         </Submenu>
         <Submenu name="9">
             <template slot="title">

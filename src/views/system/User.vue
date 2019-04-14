@@ -19,7 +19,7 @@
                 </Form>
             </div>
             <div class="add_btn">
-                <i-button type="primary" @click="showAddForm">添加用户</i-button>
+                <i-button type="primary" @click="addModal=true">添加用户</i-button>
             </div>
         </div>
 
@@ -63,30 +63,30 @@
             </div>
         </Modal>
 
-        <Modal v-model="userModal" width="750" @on-ok="handleSubmit('addUserForm')">
+        <Modal v-model="addModal" width="750" @on-ok="handleSubmit('addUserForm')">
             <div slot="header">
                 <span>添加用户</span>
             </div>
             <div class="role_form">
                 <Form ref="userForm" :model="addUserForm" :label-width="100" :rules="addUserRules">
                     <div class="form_inner">
-                        <div class="info" inline>
-                            <FormItem label="用户姓名" prop="username">
-                                <Input type="text" v-model="addUserForm.username"></Input>
-                            </FormItem>
-                            <FormItem label="用户昵称" prop="nickname">
-                                <Input type="text" v-model="addUserForm.nickname"></Input>
-                            </FormItem>
-                            <FormItem label="用户电话" prop="mobile">
-                                <Input type="text" v-model="addUserForm.mobile"></Input>
-                            </FormItem>
-                            <FormItem label="用户密码" prop="password">
-                                <Input type="text" v-model="addUserForm.password"></Input>
-                            </FormItem>
+                        <div class="info">
                             <FormItem label="用户角色" prop="roles">
                                 <Select v-model="addUserForm.roles">
                                     <Option v-for="item in allRoles" :value="item.objectId">{{item.label}}</Option>
                                 </Select>
+                            </FormItem>
+                            <FormItem label="用户名" prop="username">
+                                <Input type="text" v-model="addUserForm.username"></Input>
+                            </FormItem>
+                            <FormItem label="密码" prop="password">
+                                <Input type="text" v-model="addUserForm.password"></Input>
+                            </FormItem>
+                            <FormItem label="真实姓名" prop="realName">
+                                <Input type="text" v-model="addUserForm.realName"></Input>
+                            </FormItem>
+                            <FormItem label="电话" prop="mobile">
+                                <Input type="text" v-model="addUserForm.mobile"></Input>
                             </FormItem>
                             <FormItem label="身份证" prop="idNo">
                                 <Input type="text" v-model="addUserForm.idNo"></Input>
@@ -102,7 +102,7 @@
 
 <script>
     import {getUserList, getRoleList, addUser} from "../../service/api";
-    import {columns, addRules} from "./user";
+    import {columns, addRules} from "./user.config";
 
     export default {
         name: "User",
@@ -110,12 +110,12 @@
             return {
                 columns: columns,
                 list: [],
-                searchForm: {username: "", mobile: ""},
+                searchForm: {},
                 pageTotal: 0,
                 editModel: false,
-                userModal: false,
-                editUserForm: {realName: '', gender: '', mobile: '', idNo: ''},
-                addUserForm: {username: '', nickname: '', mobile: '', password: '', roles: '', idNo: ''},
+                addModal: false,
+                editUserForm: {},
+                addUserForm: {},
                 addUserRules: addRules,
                 allRoles: [],
                 loading: true
@@ -131,9 +131,6 @@
             }
         },
         methods: {
-            showAddForm() {
-                this.userModal = true;
-            },
             pageChange(index) {
                 console.log(index);
             },

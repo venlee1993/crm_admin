@@ -1,9 +1,11 @@
 <template>
     <div class="policy">
+
         <Breadcrumb class="bread_crumb">
             <Breadcrumb-item href="/components/breadcrumb">系统管理</Breadcrumb-item>
             <Breadcrumb-item>权限设置</Breadcrumb-item>
         </Breadcrumb>
+
         <div class="top_bar">
             <div class="search_box">
                 <Form ref="searchForm" :model="searchForm" inline class="filters">
@@ -22,7 +24,7 @@
                 </Form>
             </div>
             <div class="add_btn">
-                <i-button type="primary" @click="showAddForm">添加权限</i-button>
+                <i-button type="primary" @click="addModal = true">添加权限</i-button>
             </div>
         </div>
 
@@ -33,8 +35,9 @@
             </template>
         </Table>
 
+        <Page :total="pageTotal" :page-size="pageSize" @on-change="pageChange"/>
 
-        <Modal v-model="addModal" width="400" @on-ok="handleSubmit('addForm')">
+        <Modal v-model="addModal" width="400" @on-ok="handleSubmit">
             <div slot="header">
                 <span>添加权限</span>
             </div>
@@ -60,6 +63,7 @@
 
 <script>
     import {getPermissionList, addPermission} from '../../service/api'
+    import {tableHeader} from './policy.config'
 
     export default {
         name: "Policy",
@@ -68,68 +72,45 @@
                 searchForm: {},
                 addModal: false,
                 loading: true,
-                columns: [
-                    {
-                        title: "ID",
-                        key: "objectId"
-                    },
-                    // {
-                    //     title: "PID",
-                    //     key: "parentId"
-                    // },
-                    {
-                        title: "名称",
-                        key: "name"
-                    },
-                    {
-                        title: "权限",
-                        key: "permission"
-                    },
-                    {
-                        title: "控制类型",
-                        key: "resourceType"
-                    },
-                    {
-                        title: "操作",
-                        slot: "action",
-                        align: "center"
-                    }
-                ],
-                addForm: {
-                    name: '',
-                    permission: '',
-                    resourceType: ''
-                },
+                columns: tableHeader,
+                addForm: {name: '', permission: '', resourceType: ''},
                 list: [],
-                loading: true
+                loading: true,
+                pageIndex: 1,
+                pageSize: 10,
+                pageTotal: 1
             }
         },
         mounted() {
             this.getList();
         },
         methods: {
-            showAddForm() {
-                this.addModal = true;
-            },
             detail() {
                 console.log(this.pid);
             },
-            handleSubmit(form) {
-                if (form == 'addForm') {
-                    addPermission(this.addForm).then(res => {
-                        if (res.data.code == 200) {
-                            this.getList();
-                        }
-                    })
-                }
+            handleSubmit() {
+                addPermission(this.addForm).then(res => {
+                    if (res.data.code == 200) {
+                        this.$Message.success('添加成功');
+                        this.getList();
+                    } else {
+                        this.$Message.error('添加失败');
+                    }
+                })
             },
             getList() {
-                getPermissionList().then(res => {
+                this.loading = true;
+                getPermissionList(this.pageIndex, this.pageSize).then(res => {
                     if (res.data.code == 200) {
                         this.list = res.data.data;
+                        this.pageTotal = Number(res.data.page.total);
                         this.loading = false;
                     }
                 })
+            },
+            pageChange(index) {
+                this.pageIndex = index;
+                this.getList();
             }
         }
     }

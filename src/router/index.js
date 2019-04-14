@@ -84,7 +84,26 @@ const router = new Router({
                     path: 'list',
                     name: 'customer_list',
                     component: () => import('../views/customer/List')
-                }
+                },
+                {
+                    path: 'track',
+                    name: 'customer_track',
+                    component: () => import('../views/customer/Track')
+                },
+
+            ]
+        },
+
+        {
+            path: '/notice',
+            name: 'notice',
+            component: Layout,
+            children: [
+                {
+                    path: 'list',
+                    name: 'notice_list',
+                    component: () => import('../views/notice/List')
+                },
             ]
         }
 
