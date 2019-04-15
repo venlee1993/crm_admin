@@ -457,16 +457,7 @@
 </script>
 
 <style lang="less" scoped>
-    .action_column {
-        display: flex;
-        justify-content: space-between;
 
-        .action_row {
-            button {
-                margin-right: 20px;
-            }
-        }
-    }
 
     .order_info {
         span {

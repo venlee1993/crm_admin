@@ -25,6 +25,7 @@ const router = new Router({
             path: '/system',
             name: 'system',
             component: Layout,
+            redirect: {name: 'usermanger'},
             children: [
                 {
                     path: 'user',
@@ -105,6 +106,24 @@ const router = new Router({
                     component: () => import('../views/notice/List')
                 },
             ]
+        },
+
+        {
+            path: '/house',
+            name: 'house',
+            component: Layout,
+            children: [
+                {
+                    path: 'list',
+                    name: 'house_list',
+                    component: () => import('../views/house/List')
+                },
+            ]
+        },
+        {
+            path: '*',
+            name: '/',
+            component: Layout
         }
 
     ]

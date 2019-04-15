@@ -406,3 +406,21 @@ export const noticeDelete = (data) => {
         })
     })
 }
+
+
+export const getHouseList = (rules, pageIndex = 1, pageSize = 6) => {
+    return new Promise(function (resolve, reject) {
+        xhr.post(`/house/list`, qs.stringify({
+            feilds: Object.keys(rules),
+            values: Object.values(rules),
+            pageIndex: pageIndex,
+            pageSize: pageSize
+        }, {
+            indices: false
+        })).then(res => {
+            resolve(res)
+        }).catch(error => {
+            reject(error)
+        })
+    })
+}

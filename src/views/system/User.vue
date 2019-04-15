@@ -14,7 +14,7 @@
                         <Button type="success" @click="handleReset('searchForm')">重置</Button>
                     </FormItem>
                     <FormItem>
-                        <Button type="primary" @click="handleSubmit('searchForm')">搜索</Button>
+                        <Button type="primary" @click="goSearch('searchForm')">搜索</Button>
                     </FormItem>
                 </Form>
             </div>
@@ -30,66 +30,66 @@
                 <Tag color="primary" v-else>正常</Tag>
             </template>
             <template slot-scope="{ row, index }" slot="action">
-                <Button type="info" size="small" style="margin-right: 5px" @click="detail(row)">详情</Button>
-                <Button type="success" size="small" style="margin-right: 5px" @click="disable(row)"
-                        v-if="row.status=='ENABLE'">禁用
-                </Button>
-                <Button type="success" size="small" style="margin-right: 5px" @click="enable(row)" v-else>启用</Button>
-                <Button type="primary" size="small" style="margin-right: 5px" @click="userEdit(row)">编辑</Button>
+                <div class="action_box">
+                    <Button type="info" size="small" @click="detail(row)">详情</Button>
+                    <Button type="success" size="small" @click="disable(row)" v-if="row.status=='ENABLE'">禁用</Button>
+                    <Button type="success" size="small" @click="enable(row)" v-else>启用</Button>
+                    <Button type="primary" size="small" @click="userEdit(row)">编辑</Button>
+                </div>
             </template>
         </Table>
 
         <Page :total="pageTotal" show-elevator @on-change="pageChange"/>
 
-        <Modal v-model="editModel" width="400" @on-ok="handleSubmit('editUserForm')">
+        <Modal v-model="editModel" width="400" @on-ok="editSubmit('editForm')">
             <div slot="header">
                 <span>编辑用户</span>
             </div>
             <div class="edit_form">
-                <Form ref="editUserForm" :model="editUserForm" :label-width="60">
+                <Form ref="editForm" :model="editForm" :label-width="60">
                     <FormItem label="真名" prop="realName">
-                        <Input type="text" v-model="editUserForm.realName"></Input>
+                        <Input type="text" v-model="editForm.realName"></Input>
                     </FormItem>
                     <FormItem label="性别" prop="gender">
-                        <Input type="text" v-model="editUserForm.gender"></Input>
+                        <Input type="text" v-model="editForm.gender"></Input>
                     </FormItem>
                     <FormItem label="电话" prop="mobile">
-                        <Input type="text" v-model="editUserForm.mobile"></Input>
+                        <Input type="text" v-model="editForm.mobile"></Input>
                     </FormItem>
-                    <FormItem label="身份证" prop="id_no">
-                        <Input type="text" v-model="editUserForm.idNo"></Input>
+                    <FormItem label="身份证" prop="idNo">
+                        <Input type="text" v-model="editForm.idNo"></Input>
                     </FormItem>
                 </Form>
             </div>
         </Modal>
 
-        <Modal v-model="addModal" width="750" @on-ok="handleSubmit('addUserForm')">
+        <Modal v-model="addModal" width="750" @on-ok="addSubmit('addForm')">
             <div slot="header">
                 <span>添加用户</span>
             </div>
             <div class="role_form">
-                <Form ref="userForm" :model="addUserForm" :label-width="100" :rules="addUserRules">
+                <Form ref="userForm" :model="addForm" :label-width="100" :rules="userRules">
                     <div class="form_inner">
                         <div class="info">
                             <FormItem label="用户角色" prop="roles">
-                                <Select v-model="addUserForm.roles">
+                                <Select v-model="addForm.roles">
                                     <Option v-for="item in allRoles" :value="item.objectId">{{item.label}}</Option>
                                 </Select>
                             </FormItem>
                             <FormItem label="用户名" prop="username">
-                                <Input type="text" v-model="addUserForm.username"></Input>
+                                <Input type="text" v-model="addForm.username"></Input>
                             </FormItem>
                             <FormItem label="密码" prop="password">
-                                <Input type="text" v-model="addUserForm.password"></Input>
+                                <Input type="text" v-model="addForm.password"></Input>
                             </FormItem>
                             <FormItem label="真实姓名" prop="realName">
-                                <Input type="text" v-model="addUserForm.realName"></Input>
+                                <Input type="text" v-model="addForm.realName"></Input>
                             </FormItem>
                             <FormItem label="电话" prop="mobile">
-                                <Input type="text" v-model="addUserForm.mobile"></Input>
+                                <Input type="text" v-model="addForm.mobile"></Input>
                             </FormItem>
                             <FormItem label="身份证" prop="idNo">
-                                <Input type="text" v-model="addUserForm.idNo"></Input>
+                                <Input type="text" v-model="addForm.idNo"></Input>
                             </FormItem>
                         </div>
                     </div>
@@ -102,7 +102,7 @@
 
 <script>
     import {getUserList, getRoleList, addUser} from "../../service/api";
-    import {columns, addRules} from "./user.config";
+    import {columns, userRules, Role, User} from "./user.config";
 
     export default {
         name: "User",
@@ -114,68 +114,52 @@
                 pageTotal: 0,
                 editModel: false,
                 addModal: false,
-                editUserForm: {},
-                addUserForm: {},
-                addUserRules: addRules,
+                editForm: {},
+                addForm: {},
+                userRules: userRules,
                 allRoles: [],
                 loading: true
-            };
+            }
         },
         created() {
-            this.userList();
+            this.getList();
             this.roleList();
-        },
-        computed: {
-            currentRoles() {
-                return this.$store.getters.roles.map(item => item.objectId)
-            }
         },
         methods: {
             pageChange(index) {
                 console.log(index);
             },
-            handleSubmit(form) {
-                if (form == 'searchForm') {
-                    if (this.searchForm.username == '' && this.searchForm.mobile == '') return;
-                    this.userFilter()
-                    this.loading = true
-                }
-                if (form == 'addUserForm') {
-                    this.addUser();
-                }
+            goSearch() {
+                if (this.searchForm.username == '' && this.searchForm.mobile == '') return;
+                this.getList(this.searchForm)
+                this.loading = true
             },
-            handleReset(name) {
-                this.loading = true;
-                this.userList();
-                this.$refs[name].resetFields();
-            },
-            userEdit(row) {
-                this.editModel = true;
-                this.editUserForm = row;
-            },
-
-            addUser() {
-                this.userModal = true;
-                let data = JSON.parse(JSON.stringify(this.addUserForm))
-                data.roles = [{objectId: data['roles']}]
-                addUser(data).then(res => {
+            addSubmit() {
+                let user = new User(this.addForm);
+                addUser(user).then(res => {
                     if (res.data.code == 200) {
-                        this.userList();
-                        this.loading = true;
+                        this.getList();
                     }
                 })
             },
-            userFilter() {
-                this.userList(this.searchForm)
+            handleReset(name) {
+                this.loading = true;
+                this.$refs[name].resetFields();
+                this.getList();
             },
-            userList(data) {
+            userEdit(row) {
+                this.editModel = true;
+                this.editForm = row;
+            },
+            getList(data) {
+                this.loading = true;
                 getUserList(data).then(res => {
                     if (res.data.code == 200) {
                         this.list = res.data.data;
                         this.pageTotal = Number(res.data.page.pages)
                         this.loading = false;
                     }
-                });
+                })
             },
             detail() {
 
@@ -185,15 +169,8 @@
             },
             roleList() {
                 getRoleList().then(res => {
-                    if (res.data.code == 200 && res.data.data.length > 0) {
-                        this.allRoles = res.data.data.map(item => {
-                            return Object.assign({}, {
-                                'key': item.objectId,
-                                'label': item.name,
-                                'role': item.role,
-                                'objectId': item.objectId
-                            });
-                        })
+                    if (res.data.code == 200) {
+                        this.allRoles = res.data.data.map(item => new Role(item.obj, item.name, item.roang, item.objectId))
                     }
                 })
             }

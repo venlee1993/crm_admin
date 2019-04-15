@@ -9,8 +9,8 @@
                 <Icon type="ios-home"/>
                 <span>房产管理</span>
             </template>
-            <MenuItem name="1-1">房产列表</MenuItem>
-            <MenuItem name="1-2">房产锁定</MenuItem>
+            <MenuItem name="1-1" to="/house/list">房产列表</MenuItem>
+            <MenuItem name="1-2" to="">戶型管理</MenuItem>
         </Submenu>
         <Submenu name="2">
             <template slot="title">

@@ -79,6 +79,16 @@ ul, ul li {
     margin-bottom: 0;
 }
 
-.base_table{
+.base_table {
     margin-bottom: 20px;
+}
+
+.action_column {
+    display: flex;
+    justify-content: space-between;
+}
+
+
+.action_column .action_row button {
+    margin-right: 20px;
 }
