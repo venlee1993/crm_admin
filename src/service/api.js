@@ -19,7 +19,7 @@ xhr.interceptors.response.use(response => {
         return response
     }
 }, error => {
-    // router.push('/user/login')
+    router.push('/user/login')
 })
 
 

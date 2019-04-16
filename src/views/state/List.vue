@@ -24,13 +24,13 @@
         </Table>
 
 
-        <Modal v-model="addModal" width="600" @on-ok="submitAdd">
+        <Modal v-model="addModal" width="600">
             <div slot="header">
-                <span>发布运营活动</span>
+                <span>添加楼盘</span>
             </div>
-            <div class="publish_form">
-                <Form ref="publishForm" :model="addForm" :label-width="100">
-                    <FormItem label="项目编号" prop="name">
+            <div class="modal_inner">
+                <Form ref="addForm" :model="addForm" :label-width="100" :rules="addRules">
+                    <FormItem label="项目编号" prop="projectNo">
                         <Input type="text" v-model="addForm.projectNo"></Input>
                     </FormItem>
                     <FormItem label="名称" prop="name">
@@ -39,19 +39,23 @@
                     <FormItem label="地址" prop="address">
                         <Input type="text" v-model="addForm.address"></Input>
                     </FormItem>
-                    <FormItem label="电话" prop="resourceType">
+                    <FormItem label="电话" prop="tel">
                         <Input type="text" v-model="addForm.tel"></Input>
                     </FormItem>
-                    <FormItem label="用地面积" prop="resourceType">
+                    <FormItem label="用地面积" prop="landArea">
                         <Input type="text" v-model="addForm.landArea"></Input>
                     </FormItem>
-                    <FormItem label="建筑面积" prop="resourceType">
+                    <FormItem label="建筑面积" prop="buildArea">
                         <Input type="text" v-model="addForm.buildArea"></Input>
                     </FormItem>
-                    <FormItem label="总车位数" prop="resourceType">
+                    <FormItem label="总车位数" prop="parkingSpaceCounts">
                         <Input type="text" v-model="addForm.parkingSpaceCounts"></Input>
                     </FormItem>
                 </Form>
+            </div>
+            <div slot="footer">
+                <Button @click="addModal=false">取消</Button>
+                <Button type="primary" @click="addSubmit('addForm')" :loading="addLoading">确定</Button>
             </div>
         </Modal>
 
@@ -60,7 +64,7 @@
             <div slot="header">
                 <span>发布运营活动</span>
             </div>
-            <div class="publish_form">
+            <div class="modal_inner">
                 <Form ref="publishForm" :model="publishForm" :label-width="60">
                     <FormItem label="标题" prop="title">
                         <Input type="text" v-model="publishForm.title"></Input>
@@ -78,12 +82,8 @@
                         </label>
                     </FormItem>
                     <FormItem label="内容" prop="content">
-                        <vue-editor
-                                v-model="publishForm.content"
-                                :editorToolbar="customToolbar"
-                                useCustomImageHandler
-                                @imageAdded="handleImageAdded"
-                        ></vue-editor>
+                        <vue-editor v-model="publishForm.content" :editorToolbar="customToolbar" useCustomImageHandler
+                                    @imageAdded="handleImageAdded"></vue-editor>
                     </FormItem>
                 </Form>
             </div>
@@ -95,7 +95,7 @@
 <script>
     import {getTowerList, addTower, activetyAdd, houseImport, richUpload} from "../../service/api";
     import {VueEditor} from "vue2-editor";
-    import {tableHeader, options} from './config'
+    import {tableHeader, options, Tower, addRules} from './config'
 
     export default {
         name: "List",
@@ -104,13 +104,15 @@
                 list: [],
                 columns: tableHeader,
                 loading: false,
+                addLoading: false,
                 addModal: false,
                 publishModal: false,
                 publishForm: {},
-                addForm: {},
-                addRules: {},
+                addForm: new Tower(),
+                addRules: addRules,
                 towerId: '',
                 previewSrc: '',
+                addLoadling: false,
                 customToolbar: options
             }
         },
@@ -130,9 +132,14 @@
                     }
                 })
             },
-            submitAdd() {
+            addSubmit(name) {
+                let result = this.validate(name);
+                if (!result) return;
                 this.loading = true;
+                this.addLoading = true;
                 addTower(this.addForm).then(res => {
+                    this.addLoading = false;
+                    this.addModal = false;
                     if (res.data.code == 200) {
                         this.getList();
                         this.$Message.success('添加楼盘成功');
@@ -151,8 +158,7 @@
                     if (res.data.code == 200) {
                         if (res.data.code == 200) {
                             this.$Message.success('发布成功');
-                        }
-                        else {
+                        } else {
                             this.$Message.error('发布失败');
                         }
                     }
@@ -189,6 +195,13 @@
                 reader.onload = function (e) {
                     that.previewSrc = this.result;
                 }
+            },
+            validate(name) {
+                let result = false;
+                this.$refs[name].validate((valid) => {
+                    result = valid
+                })
+                return result;
             }
         }
     }
@@ -219,6 +232,7 @@
         position: relative;
         margin-right: 20px;
         vertical-align: middle;
+        cursor: pointer;
 
         span {
             display: block;
@@ -244,8 +258,8 @@
     .poster {
         display: block;
         border: 1px solid #dcdee2;
-        width: 200px;
-        height: 200px;
+        width: 140px;
+        height: 140px;
         position: relative;
         overflow: hidden;
 
@@ -275,11 +289,11 @@
             right: 0;
             bottom: 0;
             z-index: 2;
+            display: flex;
+            align-items: center;
 
             img {
-                display: block;
-                max-width: 100%;
-                max-height: 100%;
+                width: 100%;
             }
         }
     }

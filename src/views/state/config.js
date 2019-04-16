@@ -73,6 +73,45 @@ export const activty = [
     }
 ]
 
+
+export const addRules = {
+    projectNo: [
+        {required: true, message: '请输入项目编号', trigger: 'blur'}
+    ],
+    name: [
+        {required: true, message: '请输入名称', trigger: 'blur'}
+    ],
+    address: [
+        {required: true, message: '请输入地址', trigger: 'blur'}
+    ],
+    tel: [
+        {required: true, message: '请输入电话', trigger: 'blur', max: 11},
+    ],
+    landArea: [
+        {required: true, message: '请输入用地面积', trigger: 'blur'},
+    ],
+    buildArea: [
+        {required: true, message: '请输入建地面积', trigger: 'blur'},
+    ],
+    parkingSpaceCounts: [
+        {required: true, message: '请输入总车位数', trigger: 'blur'},
+    ]
+}
+
+
+export class Tower {
+    constructor(projectNo = '', name = '', address = '', tel = '', landArea = '', buildArea = '', parkingSpaceCounts = '') {
+        this.projectNo = projectNo;
+        this.name = name;
+        this.address = address;
+        this.tel = tel;
+        this.landArea = landArea;
+        this.buildArea = buildArea;
+        this.parkingSpaceCounts = parkingSpaceCounts;
+    }
+}
+
+
 export class Activty {
 
     constructor(title = '', intro = '', post = null, content = '') {
