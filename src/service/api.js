@@ -19,7 +19,7 @@ xhr.interceptors.response.use(response => {
         return response
     }
 }, error => {
-    router.push('/user/login')
+    // router.push('/user/login')
 })
 
 
@@ -35,21 +35,16 @@ export const login = () => {
     })
 }
 
-export const getUserList = (data) => {
+export const getUserList = (rules, pageIndex = 1, pageSize = 10) => {
     return new Promise(function (resolve, reject) {
-        let base = '/user/list';
-        if (data) {
-            let feilds = '?', values = ''
-            Object.keys(data).forEach(key => {
-                if (data[key] != '') {
-                    feilds = feilds + `feilds=${key}&`;
-                    values = values + `values=${data[key]}&`
-                }
-            })
-            base = base + feilds + values;
-            base = base.substring(0, base.lastIndexOf('&'));
-        }
-        xhr.post(base).then(res => {
+        xhr.post(`/user/list`, qs.stringify({
+            feilds: Object.keys(rules),
+            values: Object.values(rules),
+            pageIndex: pageIndex,
+            pageSize: pageSize
+        }, {
+            indices: false
+        })).then(res => {
             resolve(res)
         }).catch(error => {
             reject(error)
@@ -88,10 +83,10 @@ export const addUser = (data) => {
     })
 }
 
-
-export const getRoleList = () => {
+//禁用用户
+export const disableUser = (userId) => {
     return new Promise(function (resolve, reject) {
-        xhr.post('/role/list').then(res => {
+        xhr.post('/user/disable', qs.stringify({objectId: userId})).then(res => {
             resolve(res)
         }).catch(error => {
             reject(error)
@@ -99,11 +94,45 @@ export const getRoleList = () => {
     })
 }
 
-export const getPermissionList = (pageIndex = 1, pageSize = 10) => {
+
+//启用用户
+export const enableUser = (userId) => {
     return new Promise(function (resolve, reject) {
-        xhr.post('/permission/list', qs.stringify({
+        xhr.post('/user/enable', qs.stringify({objectId: userId})).then(res => {
+            resolve(res)
+        }).catch(error => {
+            reject(error)
+        })
+    })
+}
+
+
+export const getRoleList = (rules, pageIndex, pageSize) => {
+    return new Promise(function (resolve, reject) {
+        xhr.post('/role/list', qs.stringify({
+            feilds: Object.keys(rules),
+            values: Object.values(rules),
             pageIndex: pageIndex,
             pageSize: pageSize
+        }, {
+            indices: false
+        })).then(res => {
+            resolve(res)
+        }).catch(error => {
+            reject(error)
+        })
+    })
+}
+
+export const getPermissionList = (rules, pageIndex = 1, pageSize = 10) => {
+    return new Promise(function (resolve, reject) {
+        xhr.post('/permission/list', qs.stringify({
+            feilds: Object.keys(rules),
+            values: Object.values(rules),
+            pageIndex: pageIndex,
+            pageSize: pageSize
+        }, {
+            indices: false
         })).then(res => {
             resolve(res)
         }).catch(error => {

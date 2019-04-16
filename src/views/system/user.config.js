@@ -15,7 +15,8 @@ export const columns = [
     },
     {
         title: "性别",
-        slot: "gender"
+        slot: "gender",
+        align: "center"
     },
     {
         title: "手机号",
@@ -23,7 +24,8 @@ export const columns = [
     },
     {
         title: "状态",
-        slot: "status"
+        slot: "status",
+        align: "center"
     },
     {
         title: "操作",
@@ -39,6 +41,9 @@ export const userRules = {
     ],
     realName: [
         {required: true, message: '请输入真实姓名', trigger: 'blur'}
+    ],
+    gender: [
+        {required: true, message: '请输入性别', trigger: 'blur'}
     ],
     mobile: [
         {required: true, message: '电话', trigger: 'blur'},
@@ -65,15 +70,45 @@ export const Role = class Role {
     }
 }
 
-//用户模型
+
 export const User = class User {
-    constructor(data) {
-        Object.keys(data).forEach(key => {
-            if (key == 'roles') {
-                this['roles'] = [{objectId: data[key]}]
-            } else {
-                this[key] = data[key]
-            }
-        })
+    constructor(username = '', realName = '', gender = 'M', mobile = '', password = '', roles = '', idNo = '') {
+        this.username = username;
+        this.realName = realName;
+        this.mobile = mobile;
+        this.gender = gender;
+        this.password = password;
+        this.roles = roles;
+        this.idNo = idNo;
+    }
+
+    formdata() {
+        return {
+            username: this.username,
+            realName: this.realName,
+            mobile: this.mobile,
+            gender: this.gender,
+            password: this.password,
+            roles: [{objectId: this.roles}],
+            idNo: this.idNo
+        }
+    }
+
+    reset() {
+        this.username = '';
+        this.realName = '';
+        this.mobile = '';
+        this.password = '';
+        this.roles = '';
+        this.idNo = '';
+    }
+
+    init(data) {
+        return {
+            realName: data['realName'],
+            mobile: data['mobile'],
+            gender: data['gender'],
+            idNo: data['idNo']
+        }
     }
 }

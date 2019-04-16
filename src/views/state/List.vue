@@ -95,15 +95,15 @@
 <script>
     import {getTowerList, addTower, activetyAdd, houseImport, richUpload} from "../../service/api";
     import {VueEditor} from "vue2-editor";
-    import {columns, options} from './config'
+    import {tableHeader, options} from './config'
 
     export default {
         name: "List",
         data() {
             return {
                 list: [],
-                columns: columns,
-                loading: true,
+                columns: tableHeader,
+                loading: false,
                 addModal: false,
                 publishModal: false,
                 publishForm: {},
@@ -122,6 +122,7 @@
         },
         methods: {
             getList() {
+                this.loading = true;
                 getTowerList().then(res => {
                     if (res.data.code == 200) {
                         this.list = res.data.data;
@@ -130,8 +131,10 @@
                 })
             },
             submitAdd() {
+                this.loading = true;
                 addTower(this.addForm).then(res => {
                     if (res.data.code == 200) {
+                        this.getList();
                         this.$Message.success('添加楼盘成功');
                     } else {
                         this.$Message.success('添加楼盘失败');
@@ -148,7 +151,8 @@
                     if (res.data.code == 200) {
                         if (res.data.code == 200) {
                             this.$Message.success('发布成功');
-                        } else {
+                        }
+                        else {
                             this.$Message.error('发布失败');
                         }
                     }
@@ -160,6 +164,7 @@
                 formdata.append('file', file)
                 houseImport(id, formdata).then(res => {
                     if (res.data.code == 200) {
+                        this.getList();
                         this.$Message.success('上传Excel成功');
                     } else {
                         this.$Message.error('上传失败');

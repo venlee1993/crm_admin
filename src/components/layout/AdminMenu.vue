@@ -19,7 +19,7 @@
             </template>
             <MenuItem name="2-1" to="/system/user">用户管理</MenuItem>
             <MenuItem name="2-2" to="/system/role">角色管理</MenuItem>
-            <MenuItem name="2-3" to="/system/policy">权限管理</MenuItem>
+            <MenuItem name="2-3" to="/system/permisssion">权限管理</MenuItem>
         </Submenu>
         <Submenu name="3">
             <template slot="title">

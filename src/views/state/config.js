@@ -1,4 +1,4 @@
-export const columns = [
+export const tableHeader = [
     {
         title: "序号",
         type: "index",
@@ -72,3 +72,23 @@ export const activty = [
         align: "center"
     }
 ]
+
+export class Activty {
+
+    constructor(title = '', intro = '', post = null, content = '') {
+        this.title = title;
+        this.intro = intro;
+        this.post = post;
+        this.content = content;
+    }
+
+
+    formdate() {
+        let data = new FormData();
+        data.append('title', this.title)
+        data.append('intro', this.intro)
+        data.append('post', this.post)
+        data.append('content', this.content)
+        return data;
+    }
+}

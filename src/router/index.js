@@ -38,9 +38,9 @@ const router = new Router({
                     component: () => import('../views/system/Role')
                 },
                 {
-                    path: 'policy',
-                    name: 'policy',
-                    component: () => import('../views/system/Policy')
+                    path: 'permisssion',
+                    name: 'permisssion',
+                    component: () => import('../views/system/Permisssion')
                 },
             ]
         },

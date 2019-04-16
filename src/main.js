@@ -6,7 +6,9 @@ import Iview from 'iview'
 import 'iview/dist/styles/iview.css'
 import './assets/css/reset.css'
 
-Vue.use(Iview)
+Vue.use(Iview, {
+    transfer: true
+})
 
 Vue.config.productionTip = false
 
